@@ -24,6 +24,10 @@ function applySchema() {
   db.exec(sql);
 }
 
+// Zastosuj schemat już przy załadowaniu modułu — serwisy przygotowują
+// zapytania (db.prepare) na poziomie modułu, więc tabele muszą istnieć.
+applySchema();
+
 module.exports = db;
 module.exports.applySchema = applySchema;
 module.exports.DB_PATH = DB_PATH;

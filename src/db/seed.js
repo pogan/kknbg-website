@@ -160,7 +160,19 @@ function seedProducts() {
     style: '', abv: null, plato: null, volume_ml: null, pack_size: 1,
     price_grosze: parsePriceToGrosze('100'), stock: 999, untappd_url: '', category: 'voucher', is_featured: 0, position: 20,
   });
-  console.log('  ✔ produkty sklepu');
+
+  // podłącz wygenerowane grafiki (public/img/shop/<slug>.jpg) jako media
+  const shopImgDir = path.join(__dirname, '..', '..', 'public', 'img', 'shop');
+  const insMedia = db.prepare(`INSERT INTO media (filename, path, variants_json, alt, mime) VALUES (?, ?, '{}', ?, 'image/jpeg')`);
+  const linkProduct = db.prepare('UPDATE products SET media_id = ? WHERE slug = ?');
+  for (const p of db.prepare('SELECT id, slug, name FROM products').all()) {
+    const file = path.join(shopImgDir, `${p.slug}.jpg`);
+    if (fs.existsSync(file)) {
+      const mid = insMedia.run(`${p.slug}.jpg`, `/img/shop/${p.slug}.jpg`, p.name).lastInsertRowid;
+      linkProduct.run(mid, p.slug);
+    }
+  }
+  console.log('  ✔ produkty sklepu (+ grafiki)');
 }
 
 // ---------------------------------------------------------------------------

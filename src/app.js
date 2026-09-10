@@ -58,7 +58,10 @@ function createApp() {
       name: 'nbg.sid',
       secret: env.SESSION_SECRET,
       resave: false,
-      saveUninitialized: false,
+      // true: każdy odwiedzający dostaje sesję od razu — token CSRF jest z nią
+      // związany, a bez tego identyfikator zmieniałby się między GET a POST.
+      // Ciasteczko sesji jest "ściśle niezbędne" (bezpieczeństwo/koszyk) — bez zgody.
+      saveUninitialized: true,
       rolling: true,
       cookie: {
         httpOnly: true,

@@ -21,7 +21,7 @@
   <%- include('../partials/cookie-bar') %>
 
   <script src="/js/bootstrap.bundle.min.js" defer></script>
-  <script src="/js/app.js" defer></script>
+  <script src="/js/app.js?v=<%= assetVersion %>" defer></script>
   <%- typeof script !== 'undefined' ? script : '' %>
 </body>
 </html>

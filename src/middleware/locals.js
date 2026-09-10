@@ -1,7 +1,14 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const site = require('../config/site');
 const env = require('../config/env');
+
+let ASSET_VERSION = String(Date.now());
+try {
+  ASSET_VERSION = String(Math.floor(fs.statSync(path.join(__dirname, '..', '..', 'public', 'css', 'main.css')).mtimeMs));
+} catch { /* noop */ }
 const { generateCsrfToken } = require('./security');
 const settingsService = require('../services/settings.service');
 const jsonld = require('../lib/jsonld');
@@ -26,6 +33,7 @@ module.exports = function localsMiddleware(req, res, next) {
   res.locals.formatDate = formatDate;
   res.locals.formatDateTime = formatDateTime;
   res.locals.year = new Date().getFullYear();
+  res.locals.assetVersion = env.NODE_ENV === 'production' ? ASSET_VERSION : String(Date.now());
   res.locals.bodyClass = '';
   res.locals.script = '';
   res.locals.title = undefined;
