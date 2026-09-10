@@ -1,0 +1,79 @@
+<div class="sg" data-refresh="120">
+  <header class="sg__top">
+    <div class="sg__brand">Nowy Browar Gdański <span>#ChodźnaBrowar</span></div>
+    <div class="sg__clock" id="sgClock"></div>
+  </header>
+
+  <% if (feed.todayPromo || feed.promos.length) { %>
+    <div class="sg__promo">
+      <% var p = feed.todayPromo || feed.promos[0]; %>
+      <span class="sg__promo-badge"><%= p.label || '★' %></span>
+      <div><strong><%= p.title %></strong><% if (p.description) { %><p><%= p.description %></p><% } %></div>
+    </div>
+  <% } %>
+
+  <div class="sg__grid">
+    <% feed.menus.slice(0, zone === 'bar' ? 1 : 2).forEach(function(m){ %>
+      <section class="sg__menu">
+        <h2><%= m.title %></h2>
+        <% m.sections.slice(0, 3).forEach(function(s){ %>
+          <h3><%= s.name %></h3>
+          <ul>
+            <% s.items.slice(0, 8).forEach(function(it){ %>
+              <li><span><%= it.name %></span><span class="sg__price"><%= it.price %><%= it.price && !isNaN(it.price) ? ' zł' : '' %></span></li>
+            <% }); %>
+          </ul>
+        <% }); %>
+      </section>
+    <% }); %>
+
+    <aside class="sg__side">
+      <% if (feed.fixtures.length) { %>
+        <h3>Transmisje</h3>
+        <ul>
+          <% feed.fixtures.forEach(function(f){ %>
+            <li><span><%= f.match %></span><span class="sg__price"><%= new Date(f.when).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) %></span></li>
+          <% }); %>
+        </ul>
+      <% } %>
+      <% if (feed.events.length) { %>
+        <h3>Wydarzenia</h3>
+        <ul>
+          <% feed.events.forEach(function(e){ %>
+            <li><span><%= e.name %></span><span class="sg__price"><%= new Date(e.date).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit'}) %></span></li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </aside>
+  </div>
+
+  <footer class="sg__foot">Aktualizacja: <%= new Date(feed.generatedAt).toLocaleString('pl-PL') %> · strefa: <%= zone %> · zasilane z tego samego CMS co strona</footer>
+</div>
+
+<style>
+  body.signage { background: #14120f; color: #f2ece0; }
+  .sg { min-height: 100vh; padding: 3vh 3vw; display: flex; flex-direction: column; font-size: 1.4vw; }
+  .sg__top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #b56a3d; padding-bottom: 1vh; }
+  .sg__brand { font-family: "Fraunces", Georgia, serif; font-size: 2.4vw; font-weight: 600; }
+  .sg__brand span { color: #c9a227; font-size: 1.2vw; margin-left: 1vw; }
+  .sg__clock { font-size: 2vw; font-variant-numeric: tabular-nums; color: #c9a227; }
+  .sg__promo { display: flex; align-items: center; gap: 2vw; background: #2f4a3e; border-radius: 1vw; padding: 1.6vh 2vw; margin: 2vh 0; }
+  .sg__promo-badge { font-family: "Fraunces", serif; font-size: 3vw; font-weight: 700; color: #fff; }
+  .sg__promo p { margin: 0.3vh 0 0; opacity: 0.85; font-size: 1.1vw; }
+  .sg__grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 0.7fr; gap: 2vw; margin-top: 1vh; }
+  .sg__menu h2 { font-family: "Fraunces", serif; color: #fff; font-size: 1.8vw; border-bottom: 1px solid #3a352c; padding-bottom: 0.5vh; }
+  .sg__menu h3, .sg__side h3 { color: #b56a3d; text-transform: uppercase; letter-spacing: 0.1em; font-size: 1vw; margin: 1.4vh 0 0.6vh; }
+  .sg__menu ul, .sg__side ul { list-style: none; margin: 0; padding: 0; }
+  .sg__menu li, .sg__side li { display: flex; justify-content: space-between; gap: 1vw; padding: 0.5vh 0; border-bottom: 1px dotted #3a352c; }
+  .sg__price { color: #c9a227; font-family: "Fraunces", serif; white-space: nowrap; }
+  .sg__side { background: #1c1a17; border-radius: 1vw; padding: 1.5vh 1.5vw; }
+  .sg__foot { margin-top: 2vh; text-align: center; color: #7a7264; font-size: 0.85vw; }
+</style>
+<script>
+  (function(){
+    function tick(){ var el = document.getElementById('sgClock'); if (el) el.textContent = new Date().toLocaleTimeString('pl-PL', {hour:'2-digit',minute:'2-digit'}); }
+    tick(); setInterval(tick, 10000);
+    var root = document.querySelector('[data-refresh]');
+    if (root) setInterval(function(){ location.reload(); }, (parseInt(root.getAttribute('data-refresh'),10) || 120) * 1000);
+  })();
+</script>

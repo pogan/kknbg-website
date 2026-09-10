@@ -1,0 +1,86 @@
+<form method="post" action="/admin/ustawienia">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <div class="admin-card">
+    <h2>Dane firmy (NAP)</h2>
+    <p class="tiny muted">Spójność NAP (Name–Address–Phone) w serwisie, Google Business Profile i katalogach to podstawa Local SEO.</p>
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label">Nazwa</label><input class="form-control" name="business_name" value="<%= s.name %>"></div>
+      <div class="col-md-6"><label class="form-label">Ulica</label><input class="form-control" name="street" value="<%= s.address.street %>"></div>
+      <div class="col-md-3"><label class="form-label">Kod</label><input class="form-control" name="postal" value="<%= s.address.postal %>"></div>
+      <div class="col-md-3"><label class="form-label">Miasto</label><input class="form-control" name="city" value="<%= s.address.city %>"></div>
+      <div class="col-md-3"><label class="form-label">Szer. geo (lat)</label><input class="form-control" name="lat" value="<%= s.address.lat %>"></div>
+      <div class="col-md-3"><label class="form-label">Dł. geo (lng)</label><input class="form-control" name="lng" value="<%= s.address.lng %>"></div>
+      <div class="col-md-4"><label class="form-label">Telefon (rezerwacje)</label><input class="form-control" name="phone" value="<%= s.contact.phone %>"></div>
+      <div class="col-md-4"><label class="form-label">Telefon (eventy)</label><input class="form-control" name="phone_events" value="<%= s.contact.phoneEvents %>"></div>
+      <div class="col-md-4"><label class="form-label">Telefon (B2B)</label><input class="form-control" name="phone_b2b" value="<%= s.contact.phoneB2B %>"></div>
+      <div class="col-md-6"><label class="form-label">E-mail</label><input class="form-control" name="email" value="<%= s.contact.email %>"></div>
+      <div class="col-md-6"><label class="form-label">E-mail (B2B)</label><input class="form-control" name="email_b2b" value="<%= s.contact.emailB2B %>"></div>
+      <div class="col-12"><label class="form-label">Link Google Maps</label><input class="form-control" name="maps_url" value="<%= s.address.mapsUrl %>"></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h2>Godziny otwarcia</h2>
+    <div class="row g-2">
+      <% days.forEach(function(d){ var r = (s.openingHours[d] && s.openingHours[d][0]) || ['','']; %>
+        <div class="col-md-4 d-flex gap-2 align-items-center">
+          <span style="width:110px"><%= dayLabels[d] %></span>
+          <input class="form-control" type="time" name="<%= d %>_open" value="<%= r[0] %>">
+          <input class="form-control" type="time" name="<%= d %>_close" value="<%= r[1] %>">
+        </div>
+      <% }); %>
+    </div>
+    <div class="row g-3 mt-2">
+      <div class="col-md-6"><label class="form-label">Notka serwisowa (PL)</label><input class="form-control" name="service_notes_pl" value="<%= s.serviceNotes.pl %>"></div>
+      <div class="col-md-6"><label class="form-label">Notka serwisowa (EN)</label><input class="form-control" name="service_notes_en" value="<%= s.serviceNotes.en %>"></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h2>Social media</h2>
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label">Instagram URL</label><input class="form-control" name="instagram" value="<%= s.social.instagram %>"></div>
+      <div class="col-md-6"><label class="form-label">Instagram handle</label><input class="form-control" name="instagram_handle" value="<%= s.social.instagramHandle %>"></div>
+      <div class="col-md-6"><label class="form-label">Facebook URL</label><input class="form-control" name="facebook" value="<%= s.social.facebook %>"></div>
+      <div class="col-md-6"><label class="form-label">TikTok URL</label><input class="form-control" name="tiktok" value="<%= s.social.tiktok %>"></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h2>Analityka i piksele</h2>
+    <p class="tiny muted">Puste = wyłączone. Skrypty ładują się dopiero po zgodzie w banerze cookie (Google Consent Mode v2).</p>
+    <div class="row g-3">
+      <div class="col-md-4"><label class="form-label">GA4 Measurement ID</label><input class="form-control" name="ga4" value="<%= s.analytics.ga4 %>" placeholder="G-XXXXXXX"></div>
+      <div class="col-md-4"><label class="form-label">GTM Container ID</label><input class="form-control" name="gtm" value="<%= s.analytics.gtm %>" placeholder="GTM-XXXXXX"></div>
+      <div class="col-md-4"><label class="form-label">Microsoft Clarity</label><input class="form-control" name="clarity" value="<%= s.analytics.clarity %>"></div>
+      <div class="col-md-4"><label class="form-label">Meta Pixel ID</label><input class="form-control" name="meta_pixel" value="<%= s.analytics.metaPixel %>"></div>
+      <div class="col-md-4"><label class="form-label">TikTok Pixel ID</label><input class="form-control" name="tiktok_pixel" value="<%= s.analytics.tiktokPixel %>"></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h2>Integracje i moduły</h2>
+    <div class="row g-3">
+      <div class="col-md-3"><label><input type="checkbox" name="f_shop" <%= s.features.shop ? 'checked' : '' %>> Sklep</label></div>
+      <div class="col-md-3"><label><input type="checkbox" name="f_reservations" <%= s.features.reservations ? 'checked' : '' %>> Rezerwacje</label></div>
+      <div class="col-md-3"><label><input type="checkbox" name="f_newsletter" <%= s.features.newsletter ? 'checked' : '' %>> Newsletter</label></div>
+      <div class="col-md-3"><label><input type="checkbox" name="f_instagram" <%= s.features.instagram ? 'checked' : '' %>> Feed Instagram</label></div>
+      <div class="col-12"><label class="form-label">URL widżetu rezerwacji (MojStolik / Zenchef) — puste = formularz wbudowany</label><input class="form-control" name="reservation_widget_url" value="<%= s.reservationWidgetUrl %>"></div>
+      <div class="col-md-4"><label class="form-label">Wolt</label><input class="form-control" name="wolt" value="<%= s.deliveryLinks.wolt %>"></div>
+      <div class="col-md-4"><label class="form-label">Pyszne.pl</label><input class="form-control" name="pyszne" value="<%= s.deliveryLinks.pyszne %>"></div>
+      <div class="col-md-4"><label class="form-label">Uber Eats</label><input class="form-control" name="ubereats" value="<%= s.deliveryLinks.ubereats %>"></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <button class="btn btn-primary" type="submit">Zapisz ustawienia</button>
+  </div>
+</form>
+
+<div class="admin-card">
+  <h2>Digital signage — ekrany w lokalu</h2>
+  <p class="muted">To samo menu i promocje, co na stronie, zasilają widok pod telewizory w lokalu.</p>
+  <a class="btn btn-outline-dark btn-sm" href="/signage" target="_blank">Podgląd widoku ekranu</a>
+  <a class="btn btn-outline-dark btn-sm" href="/signage/feed.json" target="_blank">Feed JSON</a>
+</div>

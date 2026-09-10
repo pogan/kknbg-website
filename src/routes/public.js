@@ -224,6 +224,19 @@ router.get('/social', (req, res) => {
   res.render('pages/social', { layout: 'layouts/bare', instaPosts: instagram.recent(9) });
 });
 
+router.get('/newsletter/potwierdz/:tok', (req, res) => {
+  const [id, token] = String(req.params.tok).split('-');
+  const ok = inquiries.confirmNewsletter(id, token);
+  setSeo(res, { title: 'Newsletter', robots: 'noindex,nofollow' });
+  res.render('pages/simple-message', {
+    layout: 'layouts/base',
+    heading: ok ? 'Zapis potwierdzony ✓' : 'Nie udało się potwierdzić',
+    text: ok
+      ? 'Dziękujemy! Od teraz będziesz otrzymywać informacje o nowych piwach, sezonowym menu i wydarzeniach.'
+      : 'Link jest nieprawidłowy lub wygasł. Spróbuj zapisać się ponownie.',
+  });
+});
+
 router.get('/offline', (req, res) => {
   res.locals.seo = { ...res.locals.seo, robots: 'noindex,nofollow', title: 'Brak połączenia' };
   res.render('pages/offline', { layout: 'layouts/base' });
