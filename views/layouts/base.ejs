@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <%- include('../partials/head') %>
+  <%- include('../partials/analytics-head') %>
+</head>
+<body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %> has-mobile-cta">
+  <a class="skip-link" href="#main"><%= t('common.skipToContent') %></a>
+  <%- include('../partials/analytics-body') %>
+
+  <%- include('../partials/header') %>
+
+  <main id="main">
+    <%- body %>
+  </main>
+
+  <%- include('../partials/footer') %>
+  <%- include('../partials/mobile-cta') %>
+  <%- include('../partials/cookie-bar') %>
+
+  <script src="/js/bootstrap.bundle.min.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <%- typeof script !== 'undefined' ? script : '' %>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<div class="admin-toolbar-fixed" id="adminToolbar" data-edit-endpoint="/admin/tresc/inline">
+  <span>👤 <%= user.name || user.email %></span>
+  <button type="button" class="btn btn-sm btn-light" data-admin-toggle-edit>Tryb edycji</button>
+  <a class="btn btn-sm btn-light" href="/admin">Panel</a>
+  <form method="post" action="/auth/logout" class="d-inline">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button class="btn btn-sm btn-outline-light" type="submit"><%= t('auth.logout') %></button>
+  </form>
+</div>

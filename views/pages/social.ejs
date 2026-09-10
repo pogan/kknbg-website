@@ -1,0 +1,32 @@
+<section class="section" style="max-width:34rem;margin-inline:auto">
+  <div class="container text-center">
+    <div class="site-logo justify-content-center mb-3" style="font-size:1.4rem">
+      <%- include('../partials/logo-mark') %>
+      <span>Nowy Browar<br>Gdański</span>
+    </div>
+    <p class="muted"><%= locale === 'en' ? site.tagline.en : site.tagline.pl %></p>
+
+    <div class="d-grid gap-2 mt-4">
+      <a class="btn btn-primary btn-lg" href="<%= localePath('/menu') %>">🍽️ <%= t('nav.menu') %></a>
+      <a class="btn btn-outline-dark btn-lg" href="<%= localePath('/kontakt') %>#rezerwacja">📅 <%= t('nav.reserve') %></a>
+      <a class="btn btn-outline-dark btn-lg" href="<%= localePath('/promocje') %>">🔥 <%= t('promotions.title') %></a>
+      <a class="btn btn-outline-dark btn-lg" href="<%= localePath('/sklep') %>">🛒 <%= t('nav.shop') %></a>
+      <a class="btn btn-outline-dark btn-lg" href="<%= localePath('/wydarzenia') %>">🎟️ <%= t('nav.events') %></a>
+      <a class="btn btn-outline-dark btn-lg" href="<%= settings.address.mapsUrl %>">📍 <%= t('cta.getDirections') %></a>
+    </div>
+
+    <div class="footer-social justify-content-center mt-4">
+      <a href="<%= settings.social.instagram %>" style="border-color:var(--line-strong);color:var(--ink)" aria-label="Instagram">IG</a>
+      <a href="<%= settings.social.facebook %>" style="border-color:var(--line-strong);color:var(--ink)" aria-label="Facebook">FB</a>
+      <a href="<%= settings.social.tiktok %>" style="border-color:var(--line-strong);color:var(--ink)" aria-label="TikTok">TT</a>
+    </div>
+
+    <% if (instaPosts && instaPosts.length) { %>
+      <div class="insta-grid mt-4">
+        <% instaPosts.forEach(function(p){ %>
+          <a href="<%= p.permalink %>" target="_blank" rel="noopener"><img src="<%= p.image %>" alt="<%= p.caption %>" loading="lazy"></a>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</section>

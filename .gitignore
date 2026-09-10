@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# data (runtime)
+data/*.sqlite
+data/*.sqlite-*
+data/sessions.sqlite
+data/outbox/*
+!data/outbox/.gitkeep
+data/pdf/*
+!data/pdf/.gitkeep
+
+# generated
+public/css/main.css
+public/css/main.css.map
+public/uploads/*
+!public/uploads/.gitkeep
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# source media (heavy originals — not for repo)
+kk_input_data/video/

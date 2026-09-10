@@ -1,0 +1,36 @@
+<%- include('../partials/page-hero', {
+  heading: t('location.title'), kicker: t('nav.location'), lead: t('location.lead'),
+  crumbs: [{ name: t('nav.location'), path: '/lokalizacja' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container">
+    <div id="map" data-lat="<%= settings.address.lat %>" data-lng="<%= settings.address.lng %>" data-label="<%= settings.name %>"></div>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <a class="btn btn-primary" href="<%= settings.address.mapsUrl %>" target="_blank" rel="noopener">Google Maps</a>
+      <a class="btn btn-outline-dark" href="https://maps.apple.com/?q=<%= settings.address.lat %>,<%= settings.address.lng %>" target="_blank" rel="noopener">Apple Maps</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h2 style="font-size:var(--step-1)"><%= t('location.byCar') %></h2>
+        <p class="muted"><%= t('location.carText') %></p>
+      </div>
+      <div class="col-md-4">
+        <h2 style="font-size:var(--step-1)"><%= t('location.byTransit') %></h2>
+        <p class="muted"><%= t('location.transitText') %></p>
+      </div>
+      <div class="col-md-4">
+        <h2 style="font-size:var(--step-1)"><%= t('location.parking') %></h2>
+        <p class="muted"><%= t('location.parkingText') %></p>
+      </div>
+    </div>
+    <div class="mt-4"><%- include('../partials/editable', { block: location_lead, tag: 'div', label: 'Lokalizacja — wstęp' }) %></div>
+  </div>
+</section>
+
+<% script = `<link rel="stylesheet" href="/css/leaflet.css"><script src="/js/leaflet.js" defer></script><script src="/js/map.js" defer></script>`; %>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <%- include('../partials/head') %>
+</head>
+<body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>">
+  <main id="main"><%- body %></main>
+  <script src="/js/bootstrap.bundle.min.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <%- typeof script !== 'undefined' ? script : '' %>
+</body>
+</html>

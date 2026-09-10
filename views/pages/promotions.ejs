@@ -1,0 +1,57 @@
+<%
+  const now = new Date();
+  const todayIso = now.getDay() === 0 ? 7 : now.getDay();
+  const dayLabels = { 1:t('promotions.days.1'),2:t('promotions.days.2'),3:t('promotions.days.3'),4:t('promotions.days.4'),5:t('promotions.days.5'),6:t('promotions.days.6'),7:t('promotions.days.7') };
+%>
+<%- include('../partials/page-hero', {
+  heading: t('promotions.title'), kicker: t('home.promoKicker'), lead: t('promotions.lead'),
+  crumbs: [{ name: t('nav.promotions'), path: '/promocje' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container container-narrow">
+    <%- include('../partials/editable', { block: promotions_intro, tag: 'div', label: 'Promocje — wstęp' }) %>
+  </div>
+</section>
+
+<% if (weekly && weekly.length) { %>
+<section class="section section--tight">
+  <div class="container">
+    <h2 style="font-size:var(--step-2)"><%= t('promotions.weekly') %></h2>
+    <div class="promo-week mt-3">
+      <% weekly.slice().sort((a,b)=>(a.weekday||9)-(b.weekday||9)).forEach(function(p){ %>
+        <div class="promo-day <%= p.weekday === todayIso ? 'is-today' : '' %>">
+          <span class="promo-day__dow"><%= dayLabels[p.weekday] || '' %></span>
+          <span class="promo-day__label"><%= p.short_label || p.title %></span>
+          <span class="promo-day__desc"><%= p.description || p.title %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="section">
+  <div class="container">
+    <h2 style="font-size:var(--step-2)"><%= t('promotions.current') %></h2>
+    <% if (timed && timed.length) { %>
+      <div class="feature-grid feature-grid--2 mt-3">
+        <% timed.forEach(function(p){ %>
+          <article class="card-lite">
+            <% if (p.media_path) { %><div class="card-lite__media"><img src="<%= p.media_path %>" alt="<%= p.title %>" loading="lazy"></div><% } %>
+            <div class="card-lite__body">
+              <% if (p.short_label) { %><span class="tag tag--new"><%= p.short_label %></span><% } %>
+              <h3><%= p.title %></h3>
+              <p class="muted"><%= p.description %></p>
+              <% if (p.ends_at) { %><span class="tiny muted">Do <%= formatDate(p.ends_at, 'D MMMM YYYY') %></span><% } %>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p class="lead-text muted mt-3"><%= t('promotions.noPromos') %></p>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/reservation-cta') %>

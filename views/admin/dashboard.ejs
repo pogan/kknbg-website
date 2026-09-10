@@ -1,0 +1,44 @@
+<% var s = typeof stats !== 'undefined' ? stats : {}; %>
+<div class="stat-tiles">
+  <div class="stat-tile"><div class="stat-tile__num"><%= s.menus || 0 %></div><div class="stat-tile__label">Karty menu</div></div>
+  <div class="stat-tile"><div class="stat-tile__num"><%= s.promotions || 0 %></div><div class="stat-tile__label">Promocje aktywne</div></div>
+  <div class="stat-tile"><div class="stat-tile__num"><%= s.products || 0 %></div><div class="stat-tile__label">Produkty w sklepie</div></div>
+  <div class="stat-tile"><div class="stat-tile__num"><%= s.newInquiries || 0 %></div><div class="stat-tile__label">Nowe zapytania</div></div>
+</div>
+
+<div class="admin-card">
+  <h2>Szybkie akcje</h2>
+  <div class="d-flex flex-wrap gap-2 mt-2">
+    <a class="btn btn-primary btn-sm" href="/admin/import-pdf">Zaimportuj menu z PDF</a>
+    <a class="btn btn-outline-dark btn-sm" href="/admin/menu">Edytuj menu</a>
+    <a class="btn btn-outline-dark btn-sm" href="/admin/promocje">Dodaj promocję</a>
+    <a class="btn btn-outline-dark btn-sm" href="/admin/produkty">Dodaj produkt</a>
+    <a class="btn btn-outline-dark btn-sm" href="/admin/tresc">Edytuj teksty stron</a>
+    <a class="btn btn-outline-dark btn-sm" href="/" target="_blank">Podgląd strony (tryb edycji)</a>
+  </div>
+</div>
+
+<% if (typeof recentInquiries !== 'undefined' && recentInquiries.length) { %>
+<div class="admin-card">
+  <h2>Ostatnie zapytania</h2>
+  <table class="admin-table">
+    <thead><tr><th>Typ</th><th>Od</th><th>Treść</th><th>Data</th></tr></thead>
+    <tbody>
+      <% recentInquiries.forEach(function(i){ %>
+        <tr>
+          <td><span class="pill pill--new"><%= i.type %></span></td>
+          <td><%= i.name || i.email %><br><span class="tiny muted"><%= i.email %> <%= i.phone %></span></td>
+          <td class="tiny"><%= (i.message || '').slice(0,120) %></td>
+          <td class="tiny muted"><%= formatDateTime(i.created_at) %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <a class="link-arrow mt-2 d-inline-block" href="/admin/zapytania">Wszystkie zapytania →</a>
+</div>
+<% } %>
+
+<div class="admin-card">
+  <h2>O prototypie</h2>
+  <p class="muted">To środowisko demonstracyjne. Płatności, e‑maile, logowanie Google, feed Instagrama i oceny Untappd są <strong>zamockowane</strong> — działają end‑to‑end, ale nie łączą się z zewnętrznymi usługami. Szczegóły w <code>docs/</code>.</p>
+</div>

@@ -1,0 +1,31 @@
+<section class="section">
+  <div class="container container-narrow">
+    <div class="form-card text-center">
+      <p class="kicker justify-content-center"><%= t('auth.loginTitle') %></p>
+
+      <% if (authMode === 'google') { %>
+        <h1 class="h2"><%= t('auth.loginWithGoogle') %></h1>
+        <p class="muted"><%= t('auth.noAccessText') %></p>
+        <a class="btn btn-primary btn-lg mt-3" href="/auth/google">
+          <%= t('auth.loginWithGoogle') %>
+        </a>
+      <% } else { %>
+        <h1 class="h2"><%= t('auth.mockLoginTitle') %></h1>
+        <p class="muted"><%= t('auth.mockLoginText') %></p>
+        <div class="d-grid gap-2 mt-4" style="max-width:22rem;margin-inline:auto">
+          <form method="post" action="/auth/mock">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="as" value="admin">
+            <button class="btn btn-primary btn-lg w-100" type="submit"><%= t('auth.loginAsAdmin') %></button>
+          </form>
+          <form method="post" action="/auth/mock">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="as" value="user">
+            <button class="btn btn-outline-dark w-100" type="submit"><%= t('auth.loginAsUser') %></button>
+          </form>
+        </div>
+        <p class="tiny mt-3">Administrator: <code><%= site.baseUrl ? '' : '' %><%= (typeof env !== 'undefined') ? '' : '' %>karol.konop@gmail.com</code></p>
+      <% } %>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,52 @@
+<%
+  const TYPE_LABELS = {
+    a_la_carte: t('menu.aLaCarte'), seasonal: t('menu.seasonal'),
+    group: t('menu.group'), xmas: t('menu.xmas'), drinks: t('menu.drinks'),
+  };
+  const byType = {};
+  (menus || []).forEach(m => { (byType[m.type] = byType[m.type] || []).push(m); });
+%>
+<%- include('../partials/page-hero', {
+  heading: t('menu.title'), kicker: t('home.menuKicker'), lead: t('menu.lead'),
+  crumbs: [{ name: t('nav.menu'), path: '/menu' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container container-narrow">
+    <%- include('../partials/editable', { block: menu_intro, tag: 'div', label: 'Menu — wstęp' }) %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (menus && menus.length) { %>
+      <div class="feature-grid feature-grid--3">
+        <% menus.forEach(function(m){ %>
+          <a class="card-lite card-lite--link" href="<%= localePath('/menu/' + m.slug) %>">
+            <div class="card-lite__body">
+              <span class="tag"><%= TYPE_LABELS[m.type] || m.type %></span>
+              <h3><%= m.title %></h3>
+              <% if (m.intro) { %><p class="muted"><%= m.intro.slice(0,120) %></p><% } %>
+              <span class="card-lite__cta"><%= t('cta.seeMenu') %> →</span>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="form-card text-center">
+        <p class="lead-text m-0"><%= t('menu.emptyState') %></p>
+        <% if (isAdmin) { %><a class="btn btn-primary mt-3" href="/admin/import-pdf">Zaimportuj menu z PDF</a><% } %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="section section--sunk section--tight">
+  <div class="container">
+    <div class="feature-grid feature-grid--3">
+      <a class="card-lite card-lite--link" href="<%= localePath('/oferta-dla-grup') %>"><div class="card-lite__body"><h3><%= t('menu.group') %></h3><p class="muted">Menu biesiadne, open bar, finger food, bufety.</p><span class="card-lite__cta"><%= t('cta.planEvent') %> →</span></div></a>
+      <a class="card-lite card-lite--link" href="<%= localePath('/piwa') %>"><div class="card-lite__body"><h3><%= t('nav.beers') %></h3><p class="muted">Piwa warzone w podziemiach browaru.</p><span class="card-lite__cta"><%= t('common.readMore') %> →</span></div></a>
+      <a class="card-lite card-lite--link" href="<%= localePath('/promocje') %>"><div class="card-lite__body"><h3><%= t('promotions.title') %></h3><p class="muted">Promo dnia i akcje sezonowe.</p><span class="card-lite__cta"><%= t('common.readMore') %> →</span></div></a>
+    </div>
+  </div>
+</section>

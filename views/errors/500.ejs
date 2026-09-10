@@ -1,0 +1,11 @@
+<section class="section">
+  <div class="container container-narrow text-center">
+    <p class="kicker justify-content-center">500</p>
+    <h1><%= t('errors.500title') %></h1>
+    <p class="lead-text"><%= t('errors.500text') %></p>
+    <a class="btn btn-primary mt-3" href="<%= localePath('/') %>"><%= t('errors.goHome') %></a>
+    <% if (typeof showStack !== 'undefined' && showStack && err) { %>
+      <pre class="text-start mt-4 p-3" style="background:#1c1a17;color:#f0e9dd;border-radius:12px;overflow:auto;font-size:.8rem"><%= err.stack || err.message %></pre>
+    <% } %>
+  </div>
+</section>

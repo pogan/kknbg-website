@@ -1,0 +1,22 @@
+<%
+  /* wymaga: heading ; opcjonalnie: kicker, lead, crumbs [{name,path}], image */
+%>
+<section class="section section--tight" style="<%= typeof image !== 'undefined' && image ? 'background:var(--bg-sunk)' : '' %>">
+  <div class="container">
+    <% if (typeof crumbs !== 'undefined' && crumbs) { %>
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a href="<%= localePath('/') %>"><%= t('nav.home') %></a>
+        <% crumbs.forEach(function(c, i){ %>
+          <span class="mx-1">›</span>
+          <% if (i === crumbs.length - 1) { %><span aria-current="page"><%= c.name %></span>
+          <% } else { %><a href="<%= localePath(c.path) %>"><%= c.name %></a><% } %>
+        <% }); %>
+      </nav>
+    <% } %>
+    <div class="section-head" style="margin-bottom:0">
+      <% if (typeof kicker !== 'undefined' && kicker) { %><p class="kicker"><%= kicker %></p><% } %>
+      <h1 class="text-balance"><%= heading %></h1>
+      <% if (typeof lead !== 'undefined' && lead) { %><p class="lead-text"><%= lead %></p><% } %>
+    </div>
+  </div>
+</section>

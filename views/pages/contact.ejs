@@ -1,0 +1,77 @@
+<% bodyClass = 'page-contact'; %>
+<%- include('../partials/page-hero', {
+  heading: t('contact.title'), kicker: t('nav.contact'), lead: t('contact.lead'),
+  crumbs: [{ name: t('nav.contact'), path: '/kontakt' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <%- include('../partials/editable', { block: contact_lead, tag: 'div', label: 'Kontakt — wstęp' }) %>
+        <ul class="list-unstyled mt-4">
+          <li class="mb-2"><strong>Adres</strong><br><%= settings.address.street %>, <%= settings.address.postal %> <%= settings.address.city %></li>
+          <li class="mb-2"><strong>Rezerwacje</strong><br><a href="tel:<%= settings.contact.phone.replace(/\s/g,'') %>"><%= settings.contact.phone %></a></li>
+          <li class="mb-2"><strong>Eventy i grupy</strong><br><a href="tel:+48881230302"><%= settings.contact.phoneEvents %></a></li>
+          <li class="mb-2"><strong>Handel / B2B</strong><br><a href="tel:+48539630743"><%= settings.contact.phoneB2B %></a></li>
+          <li class="mb-2"><strong>E‑mail</strong><br><a href="mailto:<%= settings.contact.email %>"><%= settings.contact.email %></a></li>
+        </ul>
+        <a class="btn btn-outline-dark" href="<%= localePath('/lokalizacja') %>"><%= t('cta.getDirections') %></a>
+      </div>
+
+      <div class="col-lg-7" id="rezerwacja">
+        <div class="form-card">
+          <h2><%= t('contact.reservationTitle') %></h2>
+          <p class="tiny muted"><%= t('contact.reservationLead') %></p>
+          <%- include('../partials/flash') %>
+
+          <% if (settings.reservationWidgetUrl) { %>
+            <iframe src="<%= settings.reservationWidgetUrl %>" title="Rezerwacja" style="width:100%;height:520px;border:0;border-radius:12px"></iframe>
+          <% } else { %>
+          <form method="post" action="<%= localePath('/formularz/reservation') %>" data-ajax-form>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="text" name="company_website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="row g-3">
+              <%- include('../partials/form-field', { name:'name', label:t('contact.name'), required:true, colClass:'col-md-6', autocomplete:'name' }) %>
+              <%- include('../partials/form-field', { name:'phone', label:t('contact.phone'), type:'tel', required:true, colClass:'col-md-6', autocomplete:'tel' }) %>
+              <%- include('../partials/form-field', { name:'email', label:t('contact.email'), type:'email', colClass:'col-md-6', autocomplete:'email' }) %>
+              <%- include('../partials/form-field', { name:'guests', label:t('contact.guests'), type:'number', colClass:'col-md-6' }) %>
+              <%- include('../partials/form-field', { name:'date', label:t('contact.date'), type:'date', colClass:'col-md-6' }) %>
+              <%- include('../partials/form-field', { name:'time', label:t('contact.time'), type:'time', colClass:'col-md-6' }) %>
+              <%- include('../partials/form-field', { name:'message', label:t('contact.message'), type:'textarea', colClass:'col-12', rows:3 }) %>
+            </div>
+            <label class="d-flex gap-2 mt-3 tiny"><input type="checkbox" name="consent" required> <span><%= t('contact.consent') %></span></label>
+            <button class="btn btn-primary btn-lg mt-3" type="submit"><%= t('contact.send') %></button>
+            <p class="form-message tiny mt-2" role="status"></p>
+          </form>
+          <p class="tiny muted mt-3">W wersji produkcyjnej: integracja z systemem rezerwacji (MojStolik / Zenchef) z potwierdzeniem online i kaucją.</p>
+          <% } %>
+        </div>
+
+        <div class="form-card mt-4">
+          <h2 style="font-size:var(--step-1)"><%= t('contact.title') %></h2>
+          <form method="post" action="<%= localePath('/formularz/contact') %>" data-ajax-form>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="text" name="company_website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="row g-3">
+              <%- include('../partials/form-field', { name:'name', label:t('contact.name'), required:true, colClass:'col-md-6' }) %>
+              <%- include('../partials/form-field', { name:'email', label:t('contact.email'), type:'email', required:true, colClass:'col-md-6' }) %>
+              <%- include('../partials/form-field', { name:'message', label:t('contact.message'), type:'textarea', required:true, colClass:'col-12' }) %>
+            </div>
+            <label class="d-flex gap-2 mt-3 tiny"><input type="checkbox" name="consent" required> <span><%= t('contact.consent') %></span></label>
+            <button class="btn btn-outline-dark mt-3" type="submit"><%= t('contact.send') %></button>
+            <p class="form-message tiny mt-2" role="status"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight section--sunk">
+  <div class="container">
+    <div id="map" data-lat="<%= settings.address.lat %>" data-lng="<%= settings.address.lng %>" data-label="<%= settings.name %>"></div>
+  </div>
+</section>
+
+<% script = `<link rel="stylesheet" href="/css/leaflet.css"><script src="/js/leaflet.js" defer></script><script src="/js/map.js" defer></script>`; %>

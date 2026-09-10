@@ -1,0 +1,10 @@
+<section class="section section--tight" style="background:var(--copper-tint)">
+  <div class="container text-center">
+    <h2 style="font-size:var(--step-2)"><%= t('contact.reservationTitle') %></h2>
+    <p class="lead-text mx-auto" style="max-width:34rem"><%= t('contact.reservationLead') %></p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+      <a class="btn btn-primary btn-lg" href="<%= localePath('/kontakt') %>#rezerwacja"><%= t('nav.reserve') %></a>
+      <a class="btn btn-outline-dark btn-lg" href="tel:<%= settings.contact.phone.replace(/\s/g,'') %>"><%= settings.contact.phone %></a>
+    </div>
+  </div>
+</section>

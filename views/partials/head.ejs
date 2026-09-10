@@ -1,0 +1,44 @@
+<%
+  const s = seo || {};
+  const pageTitle = s.title ? s.title : t('seo.homeTitle');
+  const fullTitle = s.title && !/Nowy Browar/i.test(s.title) ? `${s.title} · ${site.name}` : pageTitle;
+  const desc = s.description || t('seo.defaultDescription');
+  const canonical = s.canonical || currentUrl;
+  const ogImage = s.ogImage || (site.baseUrl + '/img/og/default.jpg');
+  const jsonldNodes = (s.jsonld && s.jsonld.length) ? s.jsonld : (baseJsonld || []);
+%>
+<title><%= fullTitle %></title>
+<meta name="description" content="<%= desc %>">
+<meta name="robots" content="<%= s.robots || 'index,follow' %>">
+<link rel="canonical" href="<%= canonical %>">
+
+<% (alternateUrls || []).forEach(function(a){ %>
+<link rel="alternate" hreflang="<%= a.locale %>" href="<%= a.url %>">
+<% }); %>
+<link rel="alternate" hreflang="x-default" href="<%= (alternateUrls || []).find(a => a.locale === defaultLocale) ? (alternateUrls.find(a => a.locale === defaultLocale).url) : site.baseUrl %>">
+
+<meta property="og:type" content="<%= s.ogType || 'website' %>">
+<meta property="og:site_name" content="<%= site.name %>">
+<meta property="og:locale" content="<%= locale === 'pl' ? 'pl_PL' : 'en_GB' %>">
+<meta property="og:title" content="<%= s.title || pageTitle %>">
+<meta property="og:description" content="<%= desc %>">
+<meta property="og:url" content="<%= canonical %>">
+<meta property="og:image" content="<%= ogImage %>">
+<meta property="og:image:alt" content="<%= s.ogImageAlt || site.name %>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= s.title || pageTitle %>">
+<meta name="twitter:description" content="<%= desc %>">
+<meta name="twitter:image" content="<%= ogImage %>">
+
+<meta name="theme-color" content="#f7f4ef">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/img/icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/img/icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/css/main.css">
+
+<% jsonldNodes.forEach(function(node){ %>
+<script type="application/ld+json"><%- JSON.stringify(node) %></script>
+<% }); %>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= (typeof title !== 'undefined' ? title + ' · ' : '') %>Panel · Nowy Browar Gdański</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="/img/icons/favicon.svg" type="image/svg+xml">
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a class="admin-sidebar__brand" href="/admin">
+        <%- include('../partials/logo-mark') %>
+        <span>NBG<small>Panel</small></span>
+      </a>
+      <nav aria-label="Nawigacja panelu">
+        <ul class="admin-nav">
+          <% (adminNav || []).forEach(function(item){ %>
+            <li>
+              <a href="<%= item.path %>" class="<%= currentPath === item.path || (item.path !== '/admin' && currentPath.indexOf(item.path) === 0) ? 'is-active' : '' %>">
+                <span><%= item.label %></span>
+                <% if (typeof badges !== 'undefined' && badges && badges[item.path]) { %>
+                  <span class="pill pill--new ms-auto"><%= badges[item.path] %></span>
+                <% } %>
+              </a>
+            </li>
+          <% }); %>
+        </ul>
+      </nav>
+      <div class="admin-sidebar__foot">
+        <a href="/" target="_blank" style="color:#cfc7b8">↗ Zobacz stronę</a><br>
+        <form method="post" action="/auth/logout" class="mt-2">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="btn btn-sm btn-outline-light" type="submit">Wyloguj</button>
+        </form>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <h1><%= typeof title !== 'undefined' ? title : 'Panel' %></h1>
+        <div class="text-end tiny">
+          <%= user ? (user.name || user.email) : '' %><br>
+          <span class="muted"><%= locale %></span>
+        </div>
+      </div>
+
+      <%- include('../partials/flash') %>
+      <%- body %>
+    </div>
+  </div>
+  <script src="/js/bootstrap.bundle.min.js" defer></script>
+  <script src="/js/admin.js" defer></script>
+  <%- typeof script !== 'undefined' ? script : '' %>
+</body>
+</html>

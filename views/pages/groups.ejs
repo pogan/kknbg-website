@@ -1,0 +1,61 @@
+<%- include('../partials/page-hero', {
+  heading: t('groups.title'), kicker: t('home.groupsKicker'), lead: t('groups.lead'),
+  crumbs: [{ name: t('nav.groups'), path: '/oferta-dla-grup' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="split">
+      <div class="split__media"><img src="/img/jedzienie_grupa.jpg" alt="Menu biesiadne dla grup" width="640" height="480" loading="lazy"></div>
+      <div><%- include('../partials/editable', { block: groups_lead, tag: 'div', label: 'Grupy — wstęp' }) %></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--sunk">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h2 style="font-size:var(--step-1)">Pakiety eventowe</h2>
+        <%- include('../partials/editable', { block: groups_packages, tag: 'div', label: 'Grupy — pakiety' }) %>
+      </div>
+      <div class="col-lg-4">
+        <h2 style="font-size:var(--step-1)">Menu bufetowe</h2>
+        <%- include('../partials/editable', { block: groups_buffet, tag: 'div', label: 'Grupy — bufet' }) %>
+      </div>
+      <div class="col-lg-4">
+        <h2 style="font-size:var(--step-1)">Komunie i chrzciny</h2>
+        <%- include('../partials/editable', { block: groups_communions, tag: 'div', label: 'Grupy — komunie' }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="zapytanie">
+  <div class="container container-narrow">
+    <div class="form-card">
+      <h2><%= t('groups.formTitle') %></h2>
+      <%- include('../partials/flash') %>
+      <form method="post" action="<%= localePath('/formularz/event') %>" data-ajax-form>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="text" name="company_website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row g-3">
+          <%- include('../partials/form-field', { name:'name', label:t('contact.name'), required:true, colClass:'col-md-6', autocomplete:'name' }) %>
+          <%- include('../partials/form-field', { name:'phone', label:t('contact.phone'), type:'tel', required:true, colClass:'col-md-6', autocomplete:'tel' }) %>
+          <%- include('../partials/form-field', { name:'email', label:t('contact.email'), type:'email', colClass:'col-md-6', autocomplete:'email' }) %>
+          <%- include('../partials/form-field', { name:'guests', label:t('groups.guests'), type:'number', colClass:'col-md-3' }) %>
+          <%- include('../partials/form-field', { name:'date', label:t('groups.eventDate'), type:'date', colClass:'col-md-3' }) %>
+          <%- include('../partials/form-field', { name:'eventType', label:t('groups.eventType'), type:'select', colClass:'col-md-6', options:[
+            {value:'urodziny',label:'Urodziny'},{value:'firmowa',label:'Impreza firmowa'},{value:'komunia',label:'Komunia / chrzciny'},
+            {value:'wigilia',label:'Wigilia firmowa'},{value:'inne',label:'Inne'}] }) %>
+          <%- include('../partials/form-field', { name:'message', label:t('contact.message'), type:'textarea', colClass:'col-12' }) %>
+        </div>
+        <label class="d-flex gap-2 mt-3 tiny">
+          <input type="checkbox" name="consent" required> <span><%= t('contact.consent') %></span>
+        </label>
+        <button class="btn btn-primary btn-lg mt-3" type="submit"><%= t('contact.send') %></button>
+        <p class="form-message tiny mt-2" role="status"></p>
+      </form>
+    </div>
+  </div>
+</section>

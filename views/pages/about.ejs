@@ -1,0 +1,47 @@
+<%- include('../partials/page-hero', {
+  heading: t('nav.about'),
+  kicker: t('home.storyKicker'),
+  lead: about_lead.title,
+  crumbs: [{ name: t('nav.about'), path: '/o-browarze' }]
+}) %>
+
+<section class="section">
+  <div class="container">
+    <div class="split">
+      <div class="split__media">
+        <img src="/img/covers/cover_restaurant.jpg" alt="Dwupoziomowa sala restauracyjna" width="640" height="480" loading="lazy">
+      </div>
+      <div>
+        <%- include('../partials/editable', { block: about_lead, tag: 'div', label: 'O browarze — wstęp' }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--sunk">
+  <div class="container container-narrow">
+    <%- include('../partials/editable', { block: about_history, showTitle: true, tag: 'div', label: 'O browarze — historia' }) %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="split split--reverse">
+      <div class="split__media">
+        <img src="/img/covers/cover_screens.jpg" alt="Strefa sportu — 35 ekranów" width="640" height="480" loading="lazy">
+      </div>
+      <div>
+        <%- include('../partials/editable', { block: about_space, showTitle: true, tag: 'div', label: 'O browarze — przestrzeń' }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink">
+  <div class="container container-narrow">
+    <%- include('../partials/editable', { block: about_brewing, showTitle: true, tag: 'div', label: 'O browarze — fermentownia' }) %>
+    <a class="btn btn-primary mt-3" href="<%= localePath('/wydarzenia') %>"><%= t('nav.events') %></a>
+  </div>
+</section>
+
+<%- include('../partials/reservation-cta') %>

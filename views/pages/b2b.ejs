@@ -1,0 +1,41 @@
+<%- include('../partials/page-hero', {
+  heading: t('b2b.title'), kicker: t('nav.b2b'), lead: t('b2b.lead'),
+  crumbs: [{ name: t('nav.b2b'), path: '/wspolpraca-b2b' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-7"><%- include('../partials/editable', { block: b2b_lead, tag: 'div', label: 'B2B — wstęp' }) %></div>
+      <div class="col-lg-5"><%- include('../partials/editable', { block: b2b_details, showTitle: true, tag: 'div', label: 'B2B — zakres' }) %></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--sunk" id="oferta">
+  <div class="container container-narrow">
+    <div class="form-card">
+      <h2><%= t('b2b.formTitle') %></h2>
+      <%- include('../partials/flash') %>
+      <form method="post" action="<%= localePath('/formularz/b2b') %>" data-ajax-form>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="text" name="company_website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row g-3">
+          <%- include('../partials/form-field', { name:'company', label:t('b2b.company'), required:true, colClass:'col-md-6' }) %>
+          <%- include('../partials/form-field', { name:'nip', label:t('b2b.nip'), colClass:'col-md-6' }) %>
+          <%- include('../partials/form-field', { name:'name', label:t('contact.name'), required:true, colClass:'col-md-6', autocomplete:'name' }) %>
+          <%- include('../partials/form-field', { name:'phone', label:t('contact.phone'), type:'tel', required:true, colClass:'col-md-6', autocomplete:'tel' }) %>
+          <%- include('../partials/form-field', { name:'email', label:t('contact.email'), type:'email', colClass:'col-md-6', autocomplete:'email' }) %>
+          <%- include('../partials/form-field', { name:'channel', label:t('b2b.channel'), type:'select', colClass:'col-md-6', options:[
+            {value:'restauracja',label:'Restauracja / pub'},{value:'hotel',label:'Hotel'},{value:'sklep',label:'Sklep specjalistyczny'},
+            {value:'siec',label:'Sieć handlowa'},{value:'hurt',label:'Hurt / dystrybucja'}] }) %>
+          <%- include('../partials/form-field', { name:'message', label:t('contact.message'), type:'textarea', colClass:'col-12' }) %>
+        </div>
+        <label class="d-flex gap-2 mt-3 tiny"><input type="checkbox" name="consent" required> <span><%= t('contact.consent') %></span></label>
+        <button class="btn btn-primary btn-lg mt-3" type="submit"><%= t('cta.b2bOffer') %></button>
+        <p class="form-message tiny mt-2" role="status"></p>
+      </form>
+      <p class="tiny muted mt-3">Kontakt handlowy: <strong><%= settings.contact.phoneB2B %></strong> · <a href="mailto:<%= settings.contact.emailB2B %>"><%= settings.contact.emailB2B %></a></p>
+    </div>
+  </div>
+</section>

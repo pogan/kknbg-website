@@ -1,0 +1,17 @@
+<%
+  /* wymaga: block = { key, locale, title, html }  ; opcjonalnie: tag, showTitle, label */
+  const _tag = typeof tag !== 'undefined' ? tag : 'div';
+  const _showTitle = typeof showTitle !== 'undefined' ? showTitle : false;
+  const _label = typeof label !== 'undefined' ? label : block.key;
+%>
+<<%= _tag %>
+  class="rich <%= isAdmin ? 'editable' : '' %>"
+  <% if (isAdmin) { %>
+    data-block-key="<%= block.key %>"
+    data-block-locale="<%= block.locale || locale %>"
+    data-block-label="<%= _label %>"
+  <% } %>
+>
+  <% if (_showTitle && block.title) { %><h2><%= block.title %></h2><% } %>
+  <%- block.html %>
+</<%= _tag %>>

@@ -1,0 +1,26 @@
+<%
+  /* wymaga: name, label ; opcjonalnie: type, required, options, value, colClass, autocomplete, placeholder, rows */
+  const _type = typeof type !== 'undefined' ? type : 'text';
+  const _req = typeof required !== 'undefined' ? required : false;
+  const _col = typeof colClass !== 'undefined' ? colClass : 'col-12';
+  const _id = 'f-' + name;
+%>
+<div class="<%= _col %>">
+  <label class="form-label" for="<%= _id %>"><%= label %><% if (_req) { %> <span aria-hidden="true">*</span><% } %></label>
+  <% if (_type === 'select') { %>
+    <select class="form-select" id="<%= _id %>" name="<%= name %>" <%= _req ? 'required' : '' %>>
+      <% (options || []).forEach(function(o){ %>
+        <option value="<%= o.value %>" <%= (typeof value !== 'undefined' && value === o.value) ? 'selected' : '' %>><%= o.label %></option>
+      <% }); %>
+    </select>
+  <% } else if (_type === 'textarea') { %>
+    <textarea class="form-control" id="<%= _id %>" name="<%= name %>" rows="<%= typeof rows !== 'undefined' ? rows : 4 %>"
+      <%= _req ? 'required' : '' %> placeholder="<%= typeof placeholder !== 'undefined' ? placeholder : '' %>"><%= typeof value !== 'undefined' ? value : '' %></textarea>
+  <% } else { %>
+    <input class="form-control" type="<%= _type %>" id="<%= _id %>" name="<%= name %>"
+      <%= _req ? 'required' : '' %>
+      <%= typeof autocomplete !== 'undefined' ? ('autocomplete="' + autocomplete + '"') : '' %>
+      placeholder="<%= typeof placeholder !== 'undefined' ? placeholder : '' %>"
+      value="<%= typeof value !== 'undefined' ? value : '' %>">
+  <% } %>
+</div>

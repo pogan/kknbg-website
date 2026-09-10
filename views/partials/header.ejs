@@ -1,0 +1,61 @@
+<header class="site-header" id="siteHeader">
+  <div class="container">
+    <div class="site-header__inner">
+      <a class="site-logo" href="<%= localePath('/') %>" aria-label="<%= site.name %> — <%= t('nav.home') %>">
+        <%- include('./logo-mark') %>
+        <span>Nowy Browar<br>Gdański<small><%= site.hashtag %></small></span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Główna nawigacja">
+        <ul>
+          <% site.nav.forEach(function(item){ %>
+            <li>
+              <a href="<%= localePath(item.path) %>"
+                 <%= currentPath === item.path ? 'aria-current="page"' : '' %>><%= t(item.key) %></a>
+            </li>
+          <% }); %>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="<%= t('common.changeLanguage') %>">
+          <% locales.forEach(function(lng){ %>
+            <a href="<%= (alternateUrls.find(a => a.locale === lng) || {}).url || localePath('/', lng) %>"
+               <%= lng === locale ? 'aria-current="true"' : '' %>
+               hreflang="<%= lng %>"><%= lng %></a>
+          <% }); %>
+        </div>
+        <a class="btn btn-primary btn-sm d-none d-lg-inline-flex" href="<%= localePath('/kontakt') %>#rezerwacja"><%= t('nav.reserve') %></a>
+        <button class="nav-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-label="<%= t('common.menu') %>">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="offcanvas offcanvas-end mobile-nav" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
+  <div class="offcanvas-header">
+    <h2 class="offcanvas-title h4 m-0" id="mobileNavLabel">Nowy Browar Gdański</h2>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="<%= t('common.close') %>"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="mobile-nav__links">
+      <li><a href="<%= localePath('/') %>"><%= t('nav.home') %></a></li>
+      <% site.nav.forEach(function(item){ %>
+        <li><a href="<%= localePath(item.path) %>"><%= t(item.key) %></a></li>
+      <% }); %>
+      <li><a href="<%= localePath('/wydarzenia') %>"><%= t('nav.events') %></a></li>
+      <li><a href="<%= localePath('/lokalizacja') %>"><%= t('nav.location') %></a></li>
+    </ul>
+    <div class="mobile-nav__meta">
+      <a class="btn btn-primary w-100 mb-3" href="<%= localePath('/kontakt') %>#rezerwacja"><%= t('nav.reserve') %></a>
+      <p class="m-0"><%= settings.address.street %>, <%= settings.address.postal %> <%= settings.address.city %></p>
+      <p class="m-0"><a href="tel:<%= settings.contact.phone.replace(/\s/g,'') %>"><%= settings.contact.phone %></a></p>
+    </div>
+  </div>
+</div>
+
+<% if (isAdmin) { %>
+  <%- include('./admin-bar') %>
+<% } %>

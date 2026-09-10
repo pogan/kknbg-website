@@ -1,0 +1,49 @@
+<%- include('../partials/page-hero', {
+  heading: t('beers.title'), kicker: t('home.beersKicker'), lead: t('beers.lead'),
+  crumbs: [{ name: t('nav.beers'), path: '/piwa' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container container-narrow">
+    <%- include('../partials/editable', { block: beers_intro, tag: 'div', label: 'Piwa — wstęp' }) %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="feature-grid feature-grid--3">
+      <% beers.forEach(function(b){
+           const r = (ratings || {})[b.slug];
+      %>
+        <article class="beer-card">
+          <div class="beer-card__top">
+            <div>
+              <span class="beer-card__style"><%= b.style %></span>
+              <h2 class="beer-card__name"><%= b.name %></h2>
+            </div>
+            <% if (r) { %>
+              <a class="untappd-chip" href="<%= r.url %>" target="_blank" rel="noopener" title="Untappd">
+                ★ <%= r.rating.toFixed(2) %>
+              </a>
+            <% } %>
+          </div>
+          <p class="muted" style="font-size:.94rem"><%= locale === 'en' ? (b.descEn || b.descPl) : b.descPl %></p>
+          <div class="beer-card__specs">
+            <span><%= t('beers.abv') %> <b><%= b.abv %>%</b></span>
+            <% if (b.plato) { %><span><%= t('beers.plato') %> <b><%= b.plato %>°</b></span><% } %>
+            <% if (r) { %><span class="ms-auto tiny"><%= r.checkins %> check‑inów</span><% } %>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+    <p class="tiny muted mt-4">Oceny i liczba check‑inów pochodzą z Untappd (w prototypie — dane demonstracyjne).</p>
+  </div>
+</section>
+
+<section class="section section--sunk section--tight">
+  <div class="container text-center">
+    <h2 style="font-size:var(--step-2)"><%= t('b2b.title') %></h2>
+    <p class="lead-text mx-auto" style="max-width:36rem">Chcesz sprzedawać nasze piwo w swoim lokalu lub sklepie? Zapewniamy instalację, serwis i wsparcie marketingowe.</p>
+    <a class="btn btn-primary btn-lg mt-2" href="<%= localePath('/wspolpraca-b2b') %>"><%= t('cta.b2bOffer') %></a>
+  </div>
+</section>

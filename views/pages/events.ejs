@@ -1,0 +1,28 @@
+<%- include('../partials/page-hero', {
+  heading: t('nav.events'), kicker: 'Nowy Browar Gdański',
+  lead: 'Degustacje piw, zwiedzanie browaru, transmisje sportowe i wieczory tematyczne.',
+  crumbs: [{ name: t('nav.events'), path: '/wydarzenia' }]
+}) %>
+
+<section class="section">
+  <div class="container">
+    <div class="feature-grid feature-grid--3">
+      <% (events || []).forEach(function(ev){ %>
+        <article class="card-lite">
+          <div class="card-lite__media"><img src="<%= ev.image %>" alt="<%= ev.name %>" loading="lazy" width="400" height="250"></div>
+          <div class="card-lite__body">
+            <span class="tag"><%= ev.tag %></span>
+            <span class="tiny muted"><%= formatDate(ev.startDate, 'dddd, D MMMM · HH:mm') %></span>
+            <h2 style="font-size:var(--step-1)"><%= ev.name %></h2>
+            <p class="muted" style="font-size:.92rem"><%= ev.description %></p>
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+              <strong><%= ev.priceFrom ? (t('common.from') + ' ' + formatPrice(ev.priceFrom)) : 'wstęp wolny' %></strong>
+              <a class="btn btn-sm btn-primary" href="<%= localePath('/kontakt') %>#rezerwacja">Zapisz się</a>
+            </div>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+    <p class="tiny muted mt-4">Prototyp: wydarzenia to dane demonstracyjne. Docelowo CRUD w panelu + integracja biletowa (GoingApp / Kicket).</p>
+  </div>
+</section>

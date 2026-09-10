@@ -1,0 +1,61 @@
+{
+  "name": "kknbg-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Prototyp strony internetowej Nowego Browaru Gdańskiego (Express + EJS + SQLite)",
+  "author": "Karol Konop",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "concurrently -k -n app,css -c blue,magenta \"nodemon --watch src --watch server.js --ext js,ejs,json server.js\" \"npm:css:watch\"",
+    "css": "sass scss/main.scss public/css/main.css --style=compressed --no-source-map --quiet --load-path=node_modules",
+    "css:watch": "sass --watch scss/main.scss:public/css/main.css --style=expanded --quiet --load-path=node_modules",
+    "assets": "node scripts/copy-assets.js",
+    "build": "npm run assets && npm run css",
+    "migrate": "node src/db/migrate.js",
+    "seed": "node src/db/seed.js",
+    "reset": "node src/db/reset.js",
+    "import:media": "node scripts/import-media.js",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "compression": "^1.7.5",
+    "connect-sqlite3": "^0.9.15",
+    "cookie-parser": "^1.4.7",
+    "csrf-csrf": "^3.1.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "envalid": "^8.0.0",
+    "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "i18next": "^24.2.0",
+    "i18next-fs-backend": "^2.6.0",
+    "i18next-http-middleware": "^3.7.1",
+    "leaflet": "^1.9.4",
+    "marked": "^15.0.12",
+    "morgan": "^1.10.0",
+    "multer": "^2.3.0",
+    "nanoid": "^3.3.8",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pdf-parse": "^1.1.1",
+    "sanitize-html": "^2.14.0",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "bootstrap": "^5.3.3",
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.9",
+    "sass": "^1.83.4",
+    "supertest": "^7.0.0"
+  }
+}

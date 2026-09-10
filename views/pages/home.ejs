@@ -1,0 +1,178 @@
+<% bodyClass = 'page-home'; %>
+
+<section class="hero">
+  <video class="hero__media" autoplay muted loop playsinline preload="metadata"
+         poster="/img/covers/hero-poster.jpg">
+    <source src="/img/video/hero.mp4" type="video/mp4">
+  </video>
+  <span class="hero__hashtag"><%= site.hashtag %></span>
+  <div class="hero__inner">
+    <div class="container">
+      <h1 class="hero__title"><%= t('home.heroTitle') %></h1>
+      <p class="hero__lead"><%= t('home.heroLead') %></p>
+      <div class="hero__cta">
+        <a class="btn btn-primary btn-lg" href="<%= localePath('/kontakt') %>#rezerwacja"><%= t('nav.reserve') %></a>
+        <a class="btn btn-ghost btn-lg" href="<%= localePath('/menu') %>"><%= t('cta.seeMenu') %></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stat-bar">
+  <div class="stat"><span class="stat__num"><%= new Date().getFullYear() - site.venue.breweryYear %></span><span class="stat__label"><%= t('home.statsYears') %></span></div>
+  <div class="stat"><span class="stat__num"><%= site.venue.seats %></span><span class="stat__label"><%= t('home.statsSeats') %></span></div>
+  <div class="stat"><span class="stat__num"><%= site.venue.screens %></span><span class="stat__label"><%= t('home.statsScreens') %></span></div>
+  <div class="stat"><span class="stat__num"><%= site.beers.length %></span><span class="stat__label"><%= t('home.statsBeers') %></span></div>
+</div>
+
+<!-- Historia / intro -->
+<section class="section">
+  <div class="container">
+    <div class="split">
+      <div class="split__media">
+        <img src="/img/covers/cover_restaurant.jpg" alt="Wnętrze restauracji Nowego Browaru Gdańskiego" width="640" height="480" loading="lazy">
+      </div>
+      <div>
+        <p class="kicker"><%= t('home.storyKicker') %></p>
+        <%- include('../partials/editable', { block: home_intro, showTitle: true, tag: 'div', label: 'Strona główna — intro' }) %>
+        <%- include('../partials/editable', { block: home_story, showTitle: false, tag: 'div', label: 'Strona główna — historia' }) %>
+        <a class="link-arrow mt-3 d-inline-flex" href="<%= localePath('/o-browarze') %>"><%= t('common.readMore') %> →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Menu -->
+<section class="section section--sunk">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker"><%= t('home.menuKicker') %></p>
+      <h2><%= t('menu.title') %></h2>
+    </div>
+    <% if (menus && menus.length) { %>
+      <div class="feature-grid feature-grid--3">
+        <% menus.slice(0,3).forEach(function(m){ %>
+          <a class="card-lite card-lite--link" href="<%= localePath('/menu/' + m.slug) %>">
+            <div class="card-lite__body">
+              <h3><%= m.title %></h3>
+              <p class="muted"><%= (m.intro || '').slice(0,110) %></p>
+              <span class="card-lite__cta"><%= t('cta.seeMenu') %> →</span>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="feature-grid feature-grid--3">
+        <a class="card-lite card-lite--link" href="<%= localePath('/menu') %>"><div class="card-lite__body"><h3><%= t('menu.aLaCarte') %></h3><p class="muted">Przekąski, dania główne, pizza z pieca opalanego drewnem.</p><span class="card-lite__cta"><%= t('cta.seeMenu') %> →</span></div></a>
+        <a class="card-lite card-lite--link" href="<%= localePath('/menu') %>"><div class="card-lite__body"><h3><%= t('menu.seasonal') %></h3><p class="muted">Sezonowe propozycje kuchni i piw.</p><span class="card-lite__cta"><%= t('cta.seeMenu') %> →</span></div></a>
+        <a class="card-lite card-lite--link" href="<%= localePath('/oferta-dla-grup') %>"><div class="card-lite__body"><h3><%= t('menu.group') %></h3><p class="muted">Menu biesiadne, bufety i pakiety eventowe.</p><span class="card-lite__cta"><%= t('cta.planEvent') %> →</span></div></a>
+      </div>
+    <% } %>
+    <div class="text-center mt-4"><a class="btn btn-outline-dark" href="<%= localePath('/menu') %>"><%= t('menu.title') %></a></div>
+  </div>
+</section>
+
+<!-- Piwa -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker"><%= t('home.beersKicker') %></p>
+      <h2><%= t('beers.title') %></h2>
+    </div>
+    <div class="feature-grid feature-grid--4">
+      <% site.beers.slice(0,4).forEach(function(b){ %>
+        <div class="beer-card">
+          <span class="beer-card__style"><%= b.style %></span>
+          <h3 class="beer-card__name"><%= b.name %></h3>
+          <p class="muted" style="font-size:.9rem"><%= (locale === 'en' ? (b.descEn || b.descPl) : b.descPl).slice(0,90) %>…</p>
+          <div class="beer-card__specs"><span><%= t('beers.abv') %> <b><%= b.abv %>%</b></span><% if (b.plato) { %><span><%= t('beers.plato') %> <b><%= b.plato %>°</b></span><% } %></div>
+        </div>
+      <% }); %>
+    </div>
+    <div class="text-center mt-4"><a class="btn btn-outline-dark" href="<%= localePath('/piwa') %>"><%= t('beers.title') %></a></div>
+  </div>
+</section>
+
+<!-- Promo -->
+<% if (promoHighlight || (weeklyPromos && weeklyPromos.length)) { %>
+<section class="section section--tight section--sunk">
+  <div class="container">
+    <p class="kicker"><%= t('home.promoKicker') %></p>
+    <% if (promoHighlight) { %>
+      <div class="promo-banner">
+        <span class="promo-banner__badge"><%= promoHighlight.short_label || '★' %></span>
+        <div class="promo-banner__text">
+          <strong><%= promoHighlight.title %></strong>
+          <% if (promoHighlight.description) { %><p class="m-0" style="opacity:.85"><%= promoHighlight.description %></p><% } %>
+        </div>
+        <a class="btn btn-light" href="<%= localePath('/promocje') %>"><%= t('promotions.title') %></a>
+      </div>
+    <% } else { %>
+      <a class="btn btn-primary" href="<%= localePath('/promocje') %>"><%= t('promotions.title') %></a>
+    <% } %>
+  </div>
+</section>
+<% } %>
+
+<!-- Grupy / eventy -->
+<section class="section section--ink">
+  <div class="container">
+    <div class="split split--reverse">
+      <div class="split__media">
+        <img src="/img/covers/cover_chrzcinykomunie.jpg" alt="Sala eventowa Nowego Browaru Gdańskiego" width="640" height="480" loading="lazy">
+      </div>
+      <div>
+        <p class="kicker"><%= t('home.groupsKicker') %></p>
+        <h2><%= t('groups.title') %></h2>
+        <%- include('../partials/editable', { block: home_groups, tag: 'div', label: 'Strona główna — grupy' }) %>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <a class="btn btn-primary" href="<%= localePath('/oferta-dla-grup') %>"><%= t('cta.planEvent') %></a>
+          <a class="btn btn-ghost" href="tel:+48881230302">+48 881 230 302</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wydarzenia -->
+<% if (upcomingEvents && upcomingEvents.length) { %>
+<section class="section">
+  <div class="container">
+    <div class="section-head"><p class="kicker"><%= t('nav.events') %></p><h2><%= t('nav.events') %></h2></div>
+    <div class="feature-grid feature-grid--3">
+      <% upcomingEvents.forEach(function(ev){ %>
+        <article class="card-lite">
+          <div class="card-lite__media"><img src="<%= ev.image %>" alt="<%= ev.name %>" loading="lazy" width="400" height="250"></div>
+          <div class="card-lite__body">
+            <span class="tiny muted"><%= formatDate(ev.startDate, 'D MMMM, HH:mm') %></span>
+            <h3 style="font-size:var(--step-1)"><%= ev.name %></h3>
+            <p class="muted" style="font-size:.9rem"><%= ev.description.slice(0,110) %>…</p>
+            <a class="card-lite__cta" href="<%= localePath('/wydarzenia') %>"><%= t('common.readMore') %> →</a>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Instagram -->
+<% if (settings.features.instagram && instaPosts && instaPosts.length) { %>
+<section class="section section--tight section--sunk">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+      <div><p class="kicker m-0"><%= t('home.instaKicker') %></p><h2 class="m-0" style="font-size:var(--step-2)"><%= settings.social.instagramHandle %></h2></div>
+      <a class="link-arrow" href="<%= settings.social.instagram %>" target="_blank" rel="noopener">Instagram →</a>
+    </div>
+    <div class="insta-grid">
+      <% instaPosts.forEach(function(p){ %>
+        <a href="<%= p.permalink %>" target="_blank" rel="noopener" aria-label="<%= p.caption %>">
+          <img src="<%= p.image %>" alt="<%= p.caption %>" loading="lazy" width="200" height="200">
+        </a>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('../partials/reservation-cta') %>

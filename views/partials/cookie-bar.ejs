@@ -1,0 +1,23 @@
+<div class="cookie-bar" id="cookieBar" hidden data-consent='<%= consent ? JSON.stringify(consent) : "null" %>'>
+  <h2><%= t('cookie.title') %></h2>
+  <p><%= t('cookie.text') %></p>
+
+  <div class="cookie-bar__prefs mt-2" hidden>
+    <label class="d-flex align-items-center gap-2 mb-1">
+      <input type="checkbox" checked disabled> <span class="tiny"><%= t('cookie.necessary') %></span>
+    </label>
+    <label class="d-flex align-items-center gap-2 mb-1">
+      <input type="checkbox" data-consent-key="analytics"> <span class="tiny"><%= t('cookie.analytics') %></span>
+    </label>
+    <label class="d-flex align-items-center gap-2">
+      <input type="checkbox" data-consent-key="marketing"> <span class="tiny"><%= t('cookie.marketing') %></span>
+    </label>
+  </div>
+
+  <div class="cookie-bar__actions">
+    <button class="btn btn-primary btn-sm" data-cookie-accept><%= t('cookie.acceptAll') %></button>
+    <button class="btn btn-outline-dark btn-sm" data-cookie-reject><%= t('cookie.rejectAll') %></button>
+    <button class="btn btn-link btn-sm p-0" data-cookie-toggle-prefs><%= t('cookie.settings') %></button>
+    <button class="btn btn-outline-dark btn-sm" data-cookie-save hidden><%= t('cookie.save') %></button>
+  </div>
+</div>

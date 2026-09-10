@@ -1,0 +1,10 @@
+<section class="section">
+  <div class="container container-narrow">
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a href="<%= localePath('/') %>"><%= t('nav.home') %></a><span class="mx-1">›</span><span aria-current="page"><%= block.title %></span>
+    </nav>
+    <h1><%= block.title %></h1>
+    <%- include('../partials/editable', { block: block, tag: 'div', label: block.title }) %>
+    <p class="tiny muted mt-4"><%= block.updatedAt ? ('Ostatnia aktualizacja: ' + formatDate(block.updatedAt)) : '' %></p>
+  </div>
+</section>

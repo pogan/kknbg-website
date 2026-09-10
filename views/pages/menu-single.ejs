@@ -1,0 +1,63 @@
+<% bodyClass = 'page-menu'; %>
+<%- include('../partials/page-hero', {
+  heading: menu.title,
+  kicker: t('menu.title'),
+  lead: menu.intro,
+  crumbs: [{ name: t('nav.menu'), path: '/menu' }, { name: menu.title, path: '/menu/' + menu.slug }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="menu-toolbar" data-menu-filters>
+      <label class="menu-filter"><input type="checkbox" value="veg"> <%= t('menu.filterVeg') %></label>
+      <label class="menu-filter"><input type="checkbox" value="gf"> <%= t('menu.filterGf') %></label>
+      <button class="btn btn-sm btn-outline-dark ms-auto" onclick="window.print()"><%= t('menu.printCard') %></button>
+      <% if (menu.source_pdf_path) { %>
+        <a class="btn btn-sm btn-outline-dark" href="<%= menu.source_pdf_path %>" download><%= t('menu.downloadPdf') %></a>
+      <% } %>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-9">
+        <% (menu.sections || []).forEach(function(section){ %>
+          <div class="menu-section">
+            <h2 class="menu-section__title"><%= section.name %></h2>
+            <% if (section.note) { %><p class="tiny muted"><%= section.note %></p><% } %>
+            <% (section.items || []).forEach(function(item){
+                 const tags = item.tags || [];
+            %>
+              <div class="menu-item" data-tags="<%= tags.join(',') %>">
+                <div class="menu-item__name">
+                  <%= item.name %><% if (item.weight) { %><span class="menu-item__weight"><%= item.weight %></span><% } %>
+                </div>
+                <div class="menu-item__price">
+                  <% if (item.price_grosze != null) { %><%= formatPrice(item.price_grosze) %>
+                  <% } else if (item.price_note) { %><span class="tiny"><%= item.price_note %></span>
+                  <% } else { %><span class="tiny muted"><%= t('menu.noPrice') %></span><% } %>
+                </div>
+                <% if (item.description) { %><div class="menu-item__desc"><%= item.description %></div><% } %>
+                <% if (tags.length) { %>
+                  <div class="menu-item__tags">
+                    <% if (tags.includes('veg')) { %><span class="tag tag--veg"><%= t('menu.vegLabel') %></span><% } %>
+                    <% if (tags.includes('gf')) { %><span class="tag tag--gf"><%= t('menu.gfLabel') %></span><% } %>
+                    <% if (tags.includes('spicy')) { %><span class="tag"><%= t('menu.spicyLabel') %></span><% } %>
+                    <% if (tags.includes('new')) { %><span class="tag tag--new"><%= t('menu.newLabel') %></span><% } %>
+                  </div>
+                <% } %>
+              </div>
+            <% }); %>
+          </div>
+        <% }); %>
+      </div>
+      <aside class="col-lg-3">
+        <div class="form-card" style="position:sticky;top:calc(var(--header-h) + 1rem)">
+          <p class="tiny muted m-0"><%= t('menu.lead') %></p>
+          <hr>
+          <p class="m-0"><strong><%= t('contact.openingHours') %></strong></p>
+          <p class="tiny muted"><%= locale === 'en' ? settings.serviceNotes.en : settings.serviceNotes.pl %></p>
+          <a class="btn btn-primary w-100 mt-2" href="<%= localePath('/kontakt') %>#rezerwacja"><%= t('nav.reserve') %></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
