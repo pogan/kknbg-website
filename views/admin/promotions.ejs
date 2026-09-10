@@ -1,0 +1,52 @@
+<% var days = {1:'Pon',2:'Wt',3:'Śr',4:'Czw',5:'Pt',6:'Sob',7:'Nd'};
+   var weekly = promotions.filter(p => p.kind === 'weekly');
+   var timed = promotions.filter(p => p.kind === 'timed'); %>
+
+<div class="admin-card d-flex justify-content-between align-items-center">
+  <p class="muted m-0">„Promo dnia" wyświetla się jako siatka na stronie /promocje. Promocje czasowe pojawiają się jako baner na stronie głównej w zadanym przedziale dat.</p>
+  <a class="btn btn-primary btn-sm" href="/admin/promocje/nowa">+ Nowa promocja</a>
+</div>
+
+<div class="admin-card">
+  <h2>Promo dnia (tygodniowe)</h2>
+  <table class="admin-table">
+    <thead><tr><th>Dzień</th><th>Etykieta</th><th>Tytuł</th><th>Aktywna</th><th></th></tr></thead>
+    <tbody>
+      <% weekly.forEach(function(p){ %>
+        <tr>
+          <td><strong><%= days[p.weekday] || '—' %></strong></td>
+          <td><span class="tag"><%= p.short_label %></span></td>
+          <td><%= p.title %></td>
+          <td><%= p.is_active ? '✅' : '—' %></td>
+          <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-dark" href="/admin/promocje/<%= p.id %>">Edytuj</a>
+            <form method="post" action="/admin/promocje/<%= p.id %>/toggle" class="d-inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-sm btn-link" type="submit"><%= p.is_active ? 'Wyłącz' : 'Włącz' %></button></form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<div class="admin-card">
+  <h2>Promocje czasowe</h2>
+  <table class="admin-table">
+    <thead><tr><th>Etykieta</th><th>Tytuł</th><th>Od</th><th>Do</th><th>Aktywna</th><th></th></tr></thead>
+    <tbody>
+      <% timed.forEach(function(p){ %>
+        <tr>
+          <td><span class="tag tag--new"><%= p.short_label %></span></td>
+          <td><%= p.title %><br><span class="tiny muted"><%= (p.description||'').slice(0,80) %></span></td>
+          <td class="tiny"><%= p.starts_at ? formatDate(p.starts_at) : '—' %></td>
+          <td class="tiny"><%= p.ends_at ? formatDate(p.ends_at) : '—' %></td>
+          <td><%= p.is_active ? '✅' : '—' %></td>
+          <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-dark" href="/admin/promocje/<%= p.id %>">Edytuj</a>
+            <form method="post" action="/admin/promocje/<%= p.id %>/usun" data-confirm="Usunąć promocję?" class="d-inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-sm btn-link text-danger" type="submit">Usuń</button></form>
+          </td>
+        </tr>
+      <% }); %>
+      <% if (!timed.length) { %><tr><td colspan="6" class="muted">Brak promocji czasowych.</td></tr><% } %>
+    </tbody>
+  </table>
+</div>

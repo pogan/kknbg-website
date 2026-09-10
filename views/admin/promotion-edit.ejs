@@ -1,0 +1,79 @@
+<div class="admin-card">
+  <form method="post" action="<%= isNew ? '/admin/promocje' : '/admin/promocje/' + promo.id %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label" for="kind">Rodzaj</label>
+        <select class="form-select" id="kind" name="kind" data-toggle-fields>
+          <option value="timed" <%= promo.kind === 'timed' ? 'selected' : '' %>>Czasowa (baner na stronie głównej)</option>
+          <option value="weekly" <%= promo.kind === 'weekly' ? 'selected' : '' %>>Promo dnia (tygodniowa)</option>
+        </select>
+      </div>
+      <div class="col-md-4" data-field="weekly" <%= promo.kind !== 'weekly' ? 'hidden' : '' %>>
+        <label class="form-label" for="weekday">Dzień tygodnia</label>
+        <select class="form-select" id="weekday" name="weekday">
+          <% [[1,'Poniedziałek'],[2,'Wtorek'],[3,'Środa'],[4,'Czwartek'],[5,'Piątek'],[6,'Sobota'],[7,'Niedziela']].forEach(function(d){ %>
+            <option value="<%= d[0] %>" <%= promo.weekday === d[0] ? 'selected' : '' %>><%= d[1] %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="locale">Język</label>
+        <select class="form-select" id="locale" name="locale"><option value="pl" <%= promo.locale==='pl'?'selected':'' %>>PL</option><option value="en" <%= promo.locale==='en'?'selected':'' %>>EN</option></select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label" for="short_label">Etykieta (np. -30%, 1+1)</label>
+        <input class="form-control" id="short_label" name="short_label" value="<%= promo.short_label || '' %>">
+      </div>
+      <div class="col-md-9">
+        <label class="form-label" for="title">Tytuł</label>
+        <input class="form-control" id="title" name="title" value="<%= promo.title || '' %>" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="description">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="2"><%= promo.description || '' %></textarea>
+      </div>
+
+      <div class="col-md-4" data-field="timed" <%= promo.kind === 'weekly' ? 'hidden' : '' %>>
+        <label class="form-label" for="starts_at">Od (data)</label>
+        <input class="form-control" type="date" id="starts_at" name="starts_at" value="<%= promo.starts_at ? String(promo.starts_at).slice(0,10) : '' %>">
+      </div>
+      <div class="col-md-4" data-field="timed" <%= promo.kind === 'weekly' ? 'hidden' : '' %>>
+        <label class="form-label" for="ends_at">Do (data)</label>
+        <input class="form-control" type="date" id="ends_at" name="ends_at" value="<%= promo.ends_at ? String(promo.ends_at).slice(0,10) : '' %>">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="media_id">Grafika (opcjonalnie)</label>
+        <select class="form-select" id="media_id" name="media_id">
+          <option value="">— brak —</option>
+          <% media.forEach(function(m){ %><option value="<%= m.id %>" <%= promo.media_id === m.id ? 'selected' : '' %>><%= m.filename %></option><% }); %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="position">Kolejność</label>
+        <input class="form-control" type="number" id="position" name="position" value="<%= promo.position || 0 %>">
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <label><input type="checkbox" name="is_active" <%= promo.is_active ? 'checked' : '' %>> aktywna</label>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn btn-primary" type="submit"><%= isNew ? 'Dodaj' : 'Zapisz' %></button>
+      <a class="btn btn-link" href="/admin/promocje">← Lista</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  (function(){
+    var sel = document.querySelector('[data-toggle-fields]');
+    function upd(){
+      var k = sel.value;
+      document.querySelectorAll('[data-field="weekly"]').forEach(function(e){ e.hidden = k !== 'weekly'; });
+      document.querySelectorAll('[data-field="timed"]').forEach(function(e){ e.hidden = k !== 'timed'; });
+    }
+    if (sel) { sel.addEventListener('change', upd); upd(); }
+  })();
+</script>
