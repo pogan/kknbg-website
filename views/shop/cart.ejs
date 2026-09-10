@@ -1,0 +1,43 @@
+<section class="section">
+  <div class="container container-narrow">
+    <h1><%= t('shop.cart') %></h1>
+    <%- include('../partials/flash') %>
+
+    <% if (summary.empty) { %>
+      <p class="lead-text muted"><%= t('shop.emptyCart') %></p>
+      <a class="btn btn-primary" href="<%= localePath('/sklep') %>"><%= t('shop.continueShopping') %></a>
+    <% } else { %>
+      <form method="post" action="<%= localePath('/koszyk/aktualizuj') %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <table class="admin-table" style="width:100%">
+          <thead><tr><th>Produkt</th><th><%= t('shop.quantity') %></th><th class="text-end">Cena</th><th></th></tr></thead>
+          <tbody>
+            <% summary.items.forEach(function(line){ %>
+              <tr>
+                <td>
+                  <strong><%= line.product.name %></strong><br>
+                  <span class="tiny muted"><%= formatPrice(line.product.price_grosze) %> / szt.</span>
+                </td>
+                <td><input class="form-control" type="number" name="qty[<%= line.product.id %>]" value="<%= line.qty %>" min="0" style="width:80px"></td>
+                <td class="text-end"><%= formatPrice(line.lineTotal) %></td>
+                <td>
+                  <button class="btn btn-sm btn-link text-danger" type="submit" formaction="<%= localePath('/koszyk/usun') %>" name="product_id" value="<%= line.product.id %>"><%= t('shop.remove') %></button>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <button class="btn btn-outline-dark btn-sm" type="submit">Przelicz</button>
+      </form>
+
+      <div class="form-card mt-4">
+        <div class="d-flex justify-content-between"><span><%= t('shop.subtotal') %></span><strong><%= formatPrice(summary.subtotal) %></strong></div>
+        <div class="d-flex justify-content-between mt-1"><span><%= t('shop.shipping') %> <span class="tiny muted">(wyliczana przy zamówieniu)</span></span><span><%= t('shop.delivery.pickup') %></span></div>
+        <hr>
+        <div class="d-flex justify-content-between" style="font-size:var(--step-1)"><strong><%= t('shop.total') %></strong><strong><%= formatPrice(summary.total) %></strong></div>
+        <a class="btn btn-primary btn-lg w-100 mt-3" href="<%= localePath('/zamowienie') %>"><%= t('shop.checkout') %></a>
+        <a class="btn btn-link w-100 mt-1" href="<%= localePath('/sklep') %>"><%= t('shop.continueShopping') %></a>
+      </div>
+    <% } %>
+  </div>
+</section>

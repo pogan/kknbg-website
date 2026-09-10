@@ -67,6 +67,14 @@ module.exports = function localsMiddleware(req, res, next) {
   // Analityka / piksele (renderowane tylko po zgodzie — patrz partials/analytics.ejs)
   res.locals.analytics = settings.analytics;
 
+  // Liczba pozycji w koszyku (do nagłówka)
+  try {
+    const c = req.session && req.session.cart ? req.session.cart : {};
+    res.locals.cartCount = Object.values(c).reduce((n, q) => n + Number(q || 0), 0);
+  } catch {
+    res.locals.cartCount = 0;
+  }
+
   // Zgody cookie z ciasteczka
   try {
     res.locals.consent = req.cookies?.nbg_consent ? JSON.parse(req.cookies.nbg_consent) : null;

@@ -1,0 +1,61 @@
+<%- include('../partials/age-gate') %>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a href="<%= localePath('/') %>"><%= t('nav.home') %></a><span class="mx-1">›</span>
+      <a href="<%= localePath('/sklep') %>"><%= t('nav.shop') %></a><span class="mx-1">›</span>
+      <span aria-current="page"><%= product.name %></span>
+    </nav>
+
+    <div class="split">
+      <div class="split__media">
+        <% if (product.image) { %>
+          <img src="<%= product.image %>" alt="<%= product.name %>" width="640" height="640">
+        <% } else { %>
+          <div style="aspect-ratio:1;border-radius:var(--radius-lg);background:var(--forest);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2rem;text-align:center;padding:2rem"><%= product.name %></div>
+        <% } %>
+      </div>
+      <div>
+        <span class="beer-card__style"><%= product.style || product.category %></span>
+        <h1><%= product.name %></h1>
+        <% if (product.subtitle) { %><p class="lead-text"><%= product.subtitle %></p><% } %>
+        <p><%= product.description %></p>
+
+        <% if (product.abv || product.ibu || product.volume_ml) { %>
+          <div class="beer-card__specs" style="border-top:0;padding-top:0">
+            <% if (product.abv) { %><span><%= t('shop.abv') %> <b><%= product.abv %>%</b></span><% } %>
+            <% if (product.plato) { %><span>Ekstrakt <b><%= product.plato %>°</b></span><% } %>
+            <% if (product.volume_ml) { %><span><%= t('shop.volume') %> <b><%= product.volume_ml %> ml</b></span><% } %>
+            <% if (product.pack_size > 1) { %><span>Zestaw <b><%= product.pack_size %> szt.</b></span><% } %>
+          </div>
+        <% } %>
+
+        <div class="d-flex align-items-center gap-3 my-4">
+          <span class="menu-item__price" style="font-size:var(--step-2)"><%= formatPrice(product.price_grosze) %></span>
+          <% if (product.untappd_url) { %><a class="untappd-chip" href="<%= product.untappd_url %>" target="_blank" rel="noopener">Untappd ↗</a><% } %>
+        </div>
+
+        <% if (product.stock > 0) { %>
+          <form method="post" action="<%= localePath('/koszyk/dodaj') %>" class="d-flex gap-2 align-items-end" data-ajax-cart>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="product_id" value="<%= product.id %>">
+            <input type="hidden" name="back" value="/sklep/<%= product.slug %>">
+            <div>
+              <label class="form-label" for="qty"><%= t('shop.quantity') %></label>
+              <input class="form-control" type="number" id="qty" name="qty" value="1" min="1" max="<%= Math.min(product.stock, 24) %>" style="width:90px">
+            </div>
+            <button class="btn btn-primary btn-lg" type="submit"><%= t('shop.addToCart') %></button>
+          </form>
+          <% if (product.stock <= 5) { %><p class="tiny mt-2" style="color:var(--danger)"><%= t('shop.lowStock') %> — zostało <%= product.stock %></p><% } %>
+        <% } else { %>
+          <p class="tag"><%= t('shop.outOfStock') %></p>
+        <% } %>
+
+        <p class="tiny muted mt-4"><%= t('shop.legalNote') %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% script = '<script src="/js/shop.js" defer></script>'; %>

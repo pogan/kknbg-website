@@ -1,0 +1,21 @@
+<section class="section">
+  <div class="container container-narrow">
+    <div class="form-card text-center">
+      <p class="kicker justify-content-center">Symulowana bramka płatności</p>
+      <h1 class="h2">Płatność za zamówienie</h1>
+      <p class="muted"><%= t('shop.orderNumber') %>: <strong><%= order.number %></strong></p>
+      <p style="font-size:var(--step-2);font-family:var(--font-display)"><%= formatPrice(order.total_grosze) %></p>
+
+      <div class="my-4 p-3" style="background:var(--surface-2);border-radius:12px">
+        <p class="tiny muted m-0">To ekran demonstracyjny. W wersji produkcyjnej w tym miejscu pojawia się prawdziwa bramka
+        (BLIK / karta / szybki przelew — Autopay lub Przelewy24), a po płatności provider wywołuje nasz webhook.</p>
+      </div>
+
+      <form method="post" action="/platnosc/<%= order.number %>/rozstrzygnij" class="d-flex gap-2 justify-content-center">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="btn btn-primary btn-lg" name="outcome" value="paid"><%= t('shop.payNow') %></button>
+        <button class="btn btn-outline-dark btn-lg" name="outcome" value="failed"><%= t('shop.payReject') %></button>
+      </form>
+    </div>
+  </div>
+</section>

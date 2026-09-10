@@ -247,6 +247,32 @@ body.has-mobile-cta .cookie-bar { bottom: 76px; }
 .event-card__day { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; line-height: 1; }
 .event-card__mon { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); }
 
+// --- Age gate --------------------------------------
+.age-gate {
+  position: fixed; inset: 0; z-index: 1500;
+  background: rgba(28, 26, 23, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.age-gate__box {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  max-width: 30rem; text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+// --- Cart badge -----------------------------------
+.cart-link { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink); text-decoration: none; }
+.cart-link__count {
+  position: absolute; top: -6px; right: -6px;
+  background: var(--copper); color: #fff;
+  font-size: 0.68rem; font-weight: 700;
+  min-width: 18px; height: 18px; padding: 0 4px;
+  border-radius: 999px; display: flex; align-items: center; justify-content: center;
+}
+
 // --- Utility ---------------------------------------
 .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .divider-dot { width: 4px; height: 4px; border-radius: 999px; background: var(--line-strong); display: inline-block; vertical-align: middle; margin-inline: 0.5rem; }

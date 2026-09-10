@@ -1,0 +1,27 @@
+<div class="stat-tiles">
+  <div class="stat-tile"><div class="stat-tile__num"><%= totals.count %></div><div class="stat-tile__label">Zamówień</div></div>
+  <div class="stat-tile"><div class="stat-tile__num"><%= totals.paid %></div><div class="stat-tile__label">Opłaconych</div></div>
+  <div class="stat-tile"><div class="stat-tile__num"><%= formatPrice(totals.revenue) %></div><div class="stat-tile__label">Przychód (opłacone)</div></div>
+  <div class="stat-tile"><a class="btn btn-sm btn-outline-dark mt-2" href="/admin/zamowienia/eksport.csv">Eksport CSV</a></div>
+</div>
+
+<div class="admin-card">
+  <table class="admin-table">
+    <thead><tr><th>Numer</th><th>Klient</th><th>Dostawa</th><th>Kwota</th><th>Płatność</th><th>Status</th><th>Data</th><th></th></tr></thead>
+    <tbody>
+      <% orders.forEach(function(o){ %>
+        <tr>
+          <td><strong><%= o.number %></strong></td>
+          <td><%= o.name %><br><span class="tiny muted"><%= o.email %></span></td>
+          <td class="tiny"><%= o.fulfillment === 'courier' ? 'kurier' : 'odbiór' %></td>
+          <td><%= formatPrice(o.total_grosze) %></td>
+          <td><span class="pill pill--<%= o.payment_status === 'paid' ? 'paid' : (o.payment_status === 'failed' ? 'cancelled' : 'new') %>"><%= o.payment_status %></span></td>
+          <td><span class="pill pill--<%= o.status === 'cancelled' ? 'cancelled' : (o.status === 'paid' || o.status === 'completed' ? 'published' : 'new') %>"><%= o.status %></span></td>
+          <td class="tiny muted"><%= formatDateTime(o.created_at) %></td>
+          <td><a class="btn btn-sm btn-outline-dark" href="/admin/zamowienia/<%= o.id %>">Otwórz</a></td>
+        </tr>
+      <% }); %>
+      <% if (!orders.length) { %><tr><td colspan="8" class="muted">Brak zamówień.</td></tr><% } %>
+    </tbody>
+  </table>
+</div>

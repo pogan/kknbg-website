@@ -1,0 +1,53 @@
+<div class="admin-card">
+  <div class="d-flex justify-content-between flex-wrap gap-2">
+    <div>
+      <h2 class="m-0"><%= order.number %></h2>
+      <span class="tiny muted"><%= formatDateTime(order.created_at) %></span>
+    </div>
+    <a class="btn btn-sm btn-link" href="/admin/zamowienia">← Lista</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-7">
+    <div class="admin-card">
+      <h2>Pozycje</h2>
+      <table class="admin-table">
+        <tbody>
+          <% order.items.forEach(function(it){ %>
+            <tr><td><%= it.qty %>× <%= it.name_snapshot %></td><td class="text-end"><%= formatPrice(it.unit_price_grosze * it.qty) %></td></tr>
+          <% }); %>
+          <tr><td>Dostawa (<%= order.fulfillment %>)</td><td class="text-end"><%= formatPrice(order.shipping_grosze) %></td></tr>
+          <tr><td><strong>Razem</strong></td><td class="text-end"><strong><%= formatPrice(order.total_grosze) %></strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="admin-card">
+      <h2>Klient</h2>
+      <p class="m-0">
+        <strong><%= order.name %></strong><br>
+        <a href="mailto:<%= order.email %>"><%= order.email %></a><br>
+        <%= order.phone %><br>
+        <% if (order.address.street) { %><%= order.address.street %>, <%= order.address.postal %> <%= order.address.city %><br><% } %>
+        <% if (order.address.company) { %><span class="tiny muted"><%= order.address.company %> <%= order.address.nip %></span><% } %>
+      </p>
+      <% if (order.note) { %><p class="tiny mt-2"><strong>Uwagi:</strong> <%= order.note %></p><% } %>
+    </div>
+    <div class="admin-card">
+      <h2>Płatność i status</h2>
+      <p>Płatność: <span class="pill pill--<%= order.payment_status === 'paid' ? 'paid' : 'new' %>"><%= order.payment_status %></span> <span class="tiny muted"><%= order.payment_provider %> <%= order.payment_ref %></span></p>
+      <form method="post" action="/admin/zamowienia/<%= order.id %>/status" class="d-flex gap-2">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <select class="form-select" name="status" style="width:auto">
+          <% ['new','paid','packed','shipped','completed','cancelled'].forEach(function(s){ %>
+            <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
+          <% }); %>
+        </select>
+        <button class="btn btn-sm btn-primary" type="submit">Zmień</button>
+      </form>
+      <p class="tiny muted mt-2">Zgody: RODO ✓ · 18+ ✓ <%= order.consent.marketing ? '· newsletter ✓' : '' %></p>
+    </div>
+  </div>
+</div>

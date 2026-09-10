@@ -85,6 +85,7 @@ function createApp() {
 
   // --- Trasy ------------------------------------------------------------
   app.use('/auth', require('./routes/auth'));
+  app.use('/webhooks', require('./routes/webhooks'));
   app.use('/', require('./routes/og'));
   app.use('/', require('./routes/sitemap'));
   app.use('/', require('./routes/shop'));

@@ -1,0 +1,62 @@
+<div class="admin-card">
+  <form method="post" action="<%= isNew ? '/admin/produkty' : '/admin/produkty/' + product.id %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="row g-3">
+      <div class="col-md-8">
+        <label class="form-label" for="name">Nazwa</label>
+        <input class="form-control" id="name" name="name" value="<%= product.name || '' %>" required data-slug-source data-slug-target="#slug">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="category">Kategoria</label>
+        <select class="form-select" id="category" name="category">
+          <% ['beer','set','merch','voucher'].forEach(function(c){ %><option value="<%= c %>" <%= product.category === c ? 'selected' : '' %>><%= c %></option><% }); %>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="slug">Slug</label>
+        <input class="form-control" id="slug" name="slug" value="<%= product.slug || '' %>" <%= isNew ? '' : 'readonly' %>>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="subtitle">Podtytuł</label>
+        <input class="form-control" id="subtitle" name="subtitle" value="<%= product.subtitle || '' %>">
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="description">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="3"><%= product.description || '' %></textarea>
+      </div>
+
+      <div class="col-md-3"><label class="form-label" for="style">Styl</label><input class="form-control" id="style" name="style" value="<%= product.style || '' %>"></div>
+      <div class="col-md-2"><label class="form-label" for="abv">ABV %</label><input class="form-control" type="number" step="0.1" id="abv" name="abv" value="<%= product.abv || '' %>"></div>
+      <div class="col-md-2"><label class="form-label" for="plato">°Plato</label><input class="form-control" type="number" step="0.1" id="plato" name="plato" value="<%= product.plato || '' %>"></div>
+      <div class="col-md-2"><label class="form-label" for="ibu">IBU</label><input class="form-control" type="number" id="ibu" name="ibu" value="<%= product.ibu || '' %>"></div>
+      <div class="col-md-3"><label class="form-label" for="volume_ml">Pojemność (ml)</label><input class="form-control" type="number" id="volume_ml" name="volume_ml" value="<%= product.volume_ml || '' %>"></div>
+
+      <div class="col-md-3"><label class="form-label" for="price">Cena (zł)</label><input class="form-control" id="price" name="price" value="<%= product.price_grosze != null ? (product.price_grosze/100).toFixed(2).replace('.',',') : '' %>" required></div>
+      <div class="col-md-3"><label class="form-label" for="stock">Stan magazynowy</label><input class="form-control" type="number" id="stock" name="stock" value="<%= product.stock || 0 %>"></div>
+      <div class="col-md-3"><label class="form-label" for="pack_size">Sztuk w zestawie</label><input class="form-control" type="number" id="pack_size" name="pack_size" value="<%= product.pack_size || 1 %>"></div>
+      <div class="col-md-3"><label class="form-label" for="position">Kolejność</label><input class="form-control" type="number" id="position" name="position" value="<%= product.position || 0 %>"></div>
+
+      <div class="col-md-6"><label class="form-label" for="untappd_url">Link Untappd</label><input class="form-control" id="untappd_url" name="untappd_url" value="<%= product.untappd_url || '' %>"></div>
+      <div class="col-md-6">
+        <label class="form-label" for="media_id">Zdjęcie</label>
+        <select class="form-select" id="media_id" name="media_id">
+          <option value="">— brak —</option>
+          <% media.forEach(function(m){ %><option value="<%= m.id %>" <%= product.media_id === m.id ? 'selected' : '' %>><%= m.filename %></option><% }); %>
+        </select>
+      </div>
+
+      <div class="col-12 d-flex gap-4">
+        <label><input type="checkbox" name="is_active" <%= product.is_active ? 'checked' : '' %>> aktywny (widoczny w sklepie)</label>
+        <label><input type="checkbox" name="is_featured" <%= product.is_featured ? 'checked' : '' %>> wyróżniony</label>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn btn-primary" type="submit"><%= isNew ? 'Dodaj' : 'Zapisz' %></button>
+      <% if (!isNew) { %>
+        <a class="btn btn-link" href="/sklep/<%= product.slug %>" target="_blank">Podgląd</a>
+        <form method="post" action="/admin/produkty/<%= product.id %>/usun" data-confirm="Usunąć produkt?" class="ms-auto"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-link text-danger" type="submit">Usuń</button></form>
+      <% } %>
+    </div>
+  </form>
+</div>

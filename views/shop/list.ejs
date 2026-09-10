@@ -1,0 +1,55 @@
+<%- include('../partials/age-gate') %>
+
+<%- include('../partials/page-hero', {
+  heading: t('shop.title'), kicker: t('home.shopKicker'), lead: t('shop.lead'),
+  crumbs: [{ name: t('nav.shop'), path: '/sklep' }]
+}) %>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="flash flash--error" style="background:var(--copper-tint);color:var(--copper-deep);border-color:#e6d3c4">
+      <strong>Model poglądowy.</strong> <%= t('shop.legalNote') %> Płatność jest symulowana.
+      <% if (cartCount) { %><a class="link-arrow ms-2" href="<%= localePath('/koszyk') %>">Koszyk (<%= cartCount %>) →</a><% } %>
+    </div>
+
+    <div class="feature-grid feature-grid--3 mt-4">
+      <% products.forEach(function(p){ %>
+        <article class="card-lite">
+          <a href="<%= localePath('/sklep/' + p.slug) %>" class="card-lite__media">
+            <% if (p.image) { %><img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+            <% } else { %><div class="d-flex align-items-center justify-content-center h-100" style="background:var(--forest);color:#fff;font-family:var(--font-display);font-size:1.4rem;padding:1rem;text-align:center"><%= p.style || p.name %></div><% } %>
+          </a>
+          <div class="card-lite__body">
+            <span class="beer-card__style"><%= p.style || p.category %></span>
+            <h3 style="font-size:var(--step-1)"><a href="<%= localePath('/sklep/' + p.slug) %>" style="color:inherit;text-decoration:none"><%= p.name %></a></h3>
+            <p class="muted" style="font-size:.88rem"><%= (p.subtitle || p.description || '').slice(0,80) %></p>
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+              <strong class="menu-item__price"><%= formatPrice(p.price_grosze) %><% if (p.pack_size > 1) { %> <span class="tiny muted">/ <%= p.pack_size %> szt.</span><% } %></strong>
+              <% if (p.stock > 0) { %>
+                <form method="post" action="<%= localePath('/koszyk/dodaj') %>" data-ajax-cart>
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="product_id" value="<%= p.id %>">
+                  <input type="hidden" name="back" value="/sklep">
+                  <button class="btn btn-sm btn-primary" type="submit"><%= t('shop.addToCart') %></button>
+                </form>
+              <% } else { %><span class="tag"><%= t('shop.outOfStock') %></span><% } %>
+            </div>
+            <% if (p.stock > 0 && p.stock <= 5) { %><span class="tiny" style="color:var(--danger)"><%= t('shop.lowStock') %> (<%= p.stock %>)</span><% } %>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight section--sunk">
+  <div class="container">
+    <div class="row g-3 tiny muted">
+      <div class="col-md-4"><strong>Dostawa</strong><br>Odbiór w lokalu (0 zł) lub kurier (19 zł, gratis od 200 zł).</div>
+      <div class="col-md-4"><strong>Płatność</strong><br>W prototypie symulowana. Docelowo: BLIK / karta / szybki przelew (Autopay / Przelewy24).</div>
+      <div class="col-md-4"><strong>Wiek</strong><br>Sprzedaż wyłącznie osobom pełnoletnim (18+).</div>
+    </div>
+  </div>
+</section>
+
+<% script = '<script src="/js/shop.js" defer></script>'; %>

@@ -1,0 +1,22 @@
+<div class="admin-card d-flex justify-content-between align-items-center">
+  <p class="muted m-0"><%= products.length %> produktów. Sklep w prototypie działa na symulowanych płatnościach.</p>
+  <a class="btn btn-primary btn-sm" href="/admin/produkty/nowy">+ Nowy produkt</a>
+</div>
+
+<div class="admin-card">
+  <table class="admin-table">
+    <thead><tr><th>Produkt</th><th>Kategoria</th><th>Cena</th><th>Stan</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <% products.forEach(function(p){ %>
+        <tr>
+          <td><strong><%= p.name %></strong><br><code class="tiny">/sklep/<%= p.slug %></code></td>
+          <td><%= p.category %></td>
+          <td><%= formatPrice(p.price_grosze) %></td>
+          <td><%= p.stock %><% if (p.stock <= 5) { %> <span class="pill pill--cancelled">niski</span><% } %></td>
+          <td><span class="pill pill--<%= p.is_active ? 'published' : 'draft' %>"><%= p.is_active ? 'aktywny' : 'ukryty' %></span></td>
+          <td><a class="btn btn-sm btn-outline-dark" href="/admin/produkty/<%= p.id %>">Edytuj</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>

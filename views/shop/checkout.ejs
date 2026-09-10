@@ -1,0 +1,84 @@
+<section class="section">
+  <div class="container">
+    <h1><%= t('shop.checkoutTitle') %></h1>
+    <%- include('../partials/flash') %>
+
+    <form method="post" action="<%= localePath('/zamowienie') %>" id="checkoutForm">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="form-card">
+            <h2 style="font-size:var(--step-1)"><%= t('shop.billingTitle') %></h2>
+            <div class="row g-3">
+              <%- include('../partials/form-field', { name:'name', label:t('contact.name'), required:true, colClass:'col-md-6', autocomplete:'name' }) %>
+              <%- include('../partials/form-field', { name:'email', label:t('contact.email'), type:'email', required:true, colClass:'col-md-6', autocomplete:'email' }) %>
+              <%- include('../partials/form-field', { name:'phone', label:t('contact.phone'), type:'tel', colClass:'col-md-6', autocomplete:'tel' }) %>
+              <%- include('../partials/form-field', { name:'company', label:'Firma (opcjonalnie)', colClass:'col-md-6' }) %>
+            </div>
+          </div>
+
+          <div class="form-card mt-3">
+            <h2 style="font-size:var(--step-1)">Dostawa</h2>
+            <label class="d-flex gap-2 align-items-start mb-2">
+              <input type="radio" name="fulfillment" value="pickup" checked data-delivery>
+              <span><strong><%= t('shop.delivery.pickup') %></strong><br><span class="tiny muted">Nowy Browar Gdański, ul. Jana Kilińskiego 7E</span></span>
+            </label>
+            <label class="d-flex gap-2 align-items-start">
+              <input type="radio" name="fulfillment" value="courier" data-delivery>
+              <span><strong><%= t('shop.delivery.courier') %></strong><br><span class="tiny muted">Gratis od <%= formatPrice(summary.freeShippingThreshold) %></span></span>
+            </label>
+            <div class="row g-3 mt-1" data-courier-fields hidden>
+              <%- include('../partials/form-field', { name:'street', label:'Ulica i numer', colClass:'col-md-6', autocomplete:'street-address' }) %>
+              <%- include('../partials/form-field', { name:'postal', label:'Kod pocztowy', colClass:'col-md-3', autocomplete:'postal-code' }) %>
+              <%- include('../partials/form-field', { name:'city', label:'Miejscowość', colClass:'col-md-3', autocomplete:'address-level2' }) %>
+            </div>
+          </div>
+
+          <div class="form-card mt-3">
+            <h2 style="font-size:var(--step-1)"><%= t('shop.paymentTitle') %></h2>
+            <p class="muted"><%= t('shop.paymentMock') %> — po złożeniu zamówienia zobaczysz symulowaną bramkę z przyciskami „Zapłać" / „Odrzuć".</p>
+            <label class="d-flex gap-2 mt-3 tiny"><input type="checkbox" name="consent_age" required> <span><%= t('shop.consentAge') %></span></label>
+            <label class="d-flex gap-2 mt-2 tiny"><input type="checkbox" name="consent_terms" required> <span><%= t('shop.consentTerms') %></span></label>
+            <label class="d-flex gap-2 mt-2 tiny"><input type="checkbox" name="consent_marketing"> <span>Chcę otrzymywać newsletter (opcjonalnie).</span></label>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="form-card" style="position:sticky;top:calc(var(--header-h) + 1rem)">
+            <h2 style="font-size:var(--step-1)">Twoje zamówienie</h2>
+            <% summary.items.forEach(function(line){ %>
+              <div class="d-flex justify-content-between py-1">
+                <span><%= line.qty %>× <%= line.product.name %></span>
+                <span><%= formatPrice(line.lineTotal) %></span>
+              </div>
+            <% }); %>
+            <hr>
+            <div class="d-flex justify-content-between"><span><%= t('shop.subtotal') %></span><span><%= formatPrice(summary.subtotal) %></span></div>
+            <div class="d-flex justify-content-between"><span><%= t('shop.shipping') %></span><span data-shipping>0,00 zł</span></div>
+            <hr>
+            <div class="d-flex justify-content-between" style="font-size:var(--step-1)"><strong><%= t('shop.total') %></strong><strong data-total><%= formatPrice(summary.total) %></strong></div>
+            <button class="btn btn-primary btn-lg w-100 mt-3" type="submit"><%= t('shop.placeOrder') %></button>
+            <a class="btn btn-link w-100" href="<%= localePath('/koszyk') %>">← <%= t('shop.cart') %></a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var sub = <%= summary.subtotal %>, courier = <%= 1900 %>, free = <%= summary.freeShippingThreshold %>;
+    var ship = document.querySelector('[data-shipping]'), tot = document.querySelector('[data-total]');
+    var fields = document.querySelector('[data-courier-fields]');
+    function fmt(g){ return (g/100).toFixed(2).replace('.',',') + ' zł'; }
+    document.querySelectorAll('[data-delivery]').forEach(function(r){
+      r.addEventListener('change', function(){
+        var isCourier = r.value === 'courier' && r.checked;
+        fields.hidden = !isCourier;
+        var s = (isCourier && sub < free) ? courier : 0;
+        ship.textContent = fmt(s); tot.textContent = fmt(sub + s);
+      });
+    });
+  })();
+</script>

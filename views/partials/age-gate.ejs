@@ -1,0 +1,15 @@
+<% if (!ageOk) { %>
+<div class="age-gate">
+  <div class="age-gate__box">
+    <h2><%= t('shop.ageGateTitle') %></h2>
+    <p class="muted"><%= t('shop.ageGateText') %></p>
+    <form method="post" action="<%= localePath('/sklep/wiek') %>" class="d-flex gap-2 justify-content-center mt-3">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="back" value="<%= currentPath %>">
+      <button class="btn btn-primary" name="confirm" value="yes"><%= t('shop.ageGateYes') %></button>
+      <button class="btn btn-outline-dark" name="confirm" value="no"><%= t('shop.ageGateNo') %></button>
+    </form>
+    <p class="tiny muted mt-3"><%= t('shop.legalNote') %></p>
+  </div>
+</div>
+<% } %>
