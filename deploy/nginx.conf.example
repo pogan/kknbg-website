@@ -1,0 +1,74 @@
+# /etc/nginx/sites-available/nowybrowargdanski.pl
+# Reverse proxy dla aplikacji Node (PM2 na 127.0.0.1:3000).
+# Po utworzeniu:  ln -s ../sites-available/nowybrowargdanski.pl /etc/nginx/sites-enabled/
+#                 certbot --nginx -d nowybrowargdanski.pl -d www.nowybrowargdanski.pl
+
+# --- Brotli / gzip (wymaga modułu ngx_brotli lub użyj samego gzip) ---
+gzip on;
+gzip_comp_level 6;
+gzip_min_length 256;
+gzip_types text/plain text/css application/javascript application/json image/svg+xml application/xml application/manifest+json;
+
+upstream kknbg_app {
+    server 127.0.0.1:3000;
+    keepalive 32;
+}
+
+# Przekierowanie http -> https (certbot dopisze 443 server block)
+server {
+    listen 80;
+    listen [::]:80;
+    server_name nowybrowargdanski.pl www.nowybrowargdanski.pl;
+
+    # certbot ACME challenge
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name nowybrowargdanski.pl www.nowybrowargdanski.pl;
+
+    # ssl_certificate / ssl_certificate_key — wstawi certbot
+
+    # Nagłówki bezpieczeństwa (część ustawia też helmet w aplikacji)
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    client_max_body_size 30M;   # upload PDF menu / zdjęć
+
+    # Statyki serwowane bezpośrednio przez nginx (szybciej niż przez Node)
+    location /uploads/ {
+        alias /var/www/kknbg-website/public/uploads/;
+        expires 30d;
+        access_log off;
+        add_header Cache-Control "public, immutable";
+    }
+    location ~* ^/(css|js|img)/ {
+        root /var/www/kknbg-website/public;
+        try_files $uri @app;
+        expires 7d;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
+    location / {
+        proxy_pass http://kknbg_app;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+        proxy_read_timeout 30s;
+    }
+
+    location @app {
+        proxy_pass http://kknbg_app;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

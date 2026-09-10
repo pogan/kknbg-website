@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+        env:
+          NODE_ENV: test
+          SESSION_SECRET: ci-test-secret-0000000000000000000000000000
+
+  # Opcjonalny deploy przez SSH — odkomentuj i ustaw sekrety w repo:
+  #   DEPLOY_HOST, DEPLOY_USER, DEPLOY_KEY (klucz prywatny)
+  # deploy:
+  #   needs: test
+  #   if: github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: appleboy/ssh-action@v1
+  #       with:
+  #         host: ${{ secrets.DEPLOY_HOST }}
+  #         username: ${{ secrets.DEPLOY_USER }}
+  #         key: ${{ secrets.DEPLOY_KEY }}
+  #         script: |
+  #           cd /var/www/kknbg-website
+  #           git pull --ff-only
+  #           npm ci --omit=dev
+  #           npm run build
+  #           npm run migrate
+  #           pm2 reload ecosystem.config.js --env production

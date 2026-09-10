@@ -22,9 +22,13 @@ public/uploads/*
 !public/uploads/.gitkeep
 
 # logs
-logs/
+logs/*
+!logs/.gitkeep
 *.log
 npm-debug.log*
+
+# backups
+backups/
 
 # os / editor
 .DS_Store
