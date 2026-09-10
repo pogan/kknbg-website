@@ -224,6 +224,11 @@ router.get('/social', (req, res) => {
   res.render('pages/social', { layout: 'layouts/bare', instaPosts: instagram.recent(9) });
 });
 
+router.get('/offline', (req, res) => {
+  res.locals.seo = { ...res.locals.seo, robots: 'noindex,nofollow', title: 'Brak połączenia' };
+  res.render('pages/offline', { layout: 'layouts/base' });
+});
+
 // ============================ STRONY PRAWNE =============================
 const LEGAL = {
   '/polityka-prywatnosci': { key: 'legal.privacy', title: 'Polityka prywatności', def: 'legalPrivacy' },

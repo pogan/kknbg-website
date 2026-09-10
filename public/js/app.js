@@ -153,4 +153,12 @@
   }
 
   if (document.body.classList.contains('admin-edit-mode')) enableInlineEditing();
+
+  // --- Service worker (PWA) ------------------------------------------
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
 })();
+
