@@ -1,0 +1,349 @@
+<title>Nowy Browar Gdański — nowa strona</title>
+<meta name="description" content="Propozycja nowej strony internetowej dla Nowego Browaru Gdańskiego — prototyp, korzyści, integracje i wycena wdrożenia.">
+<style>
+  :root {
+    --ground: #f4efe4;
+    --surface: #fbf8f1;
+    --ink: #221c14;
+    --ink-soft: #5f574a;
+    --ink-faint: #8b8171;
+    --rule: #ddd3bf;
+    --rule-strong: #c9bda2;
+    --copper: #ad5c2c;
+    --copper-deep: #8a4820;
+    --forest: #2c4033;
+    --gold: #c1923a;
+    --good: #3c6b46;
+    --shadow: 0 1px 2px rgba(34,28,20,.05), 0 10px 30px rgba(34,28,20,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #16130e;
+      --surface: #1e1a13;
+      --ink: #efe7d6;
+      --ink-soft: #b6ab96;
+      --ink-faint: #8a8070;
+      --rule: #342d20;
+      --rule-strong: #463d2c;
+      --copper: #d4813f;
+      --copper-deep: #e0955a;
+      --forest: #7fae8c;
+      --gold: #d3a24e;
+      --good: #7bbd8b;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 34px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #16130e;
+    --surface: #1e1a13;
+    --ink: #efe7d6;
+    --ink-soft: #b6ab96;
+    --ink-faint: #8a8070;
+    --rule: #342d20;
+    --rule-strong: #463d2c;
+    --copper: #d4813f;
+    --copper-deep: #e0955a;
+    --forest: #7fae8c;
+    --gold: #d3a24e;
+    --good: #7bbd8b;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 34px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 1.06rem;
+    line-height: 1.62;
+    font-optical-sizing: auto;
+  }
+  .wrap {
+    max-width: 46rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
+    padding-block: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  h1, h2, h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 550;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .eyebrow {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--copper-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--rule-strong); }
+
+  /* Masthead */
+  .masthead { display: flex; flex-direction: column; gap: 1.4rem; }
+  .crest { display: flex; align-items: center; gap: 0.9rem; }
+  .crest svg { width: 52px; height: 52px; flex: none; }
+  .crest .name { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.05rem; line-height: 1.15; }
+  .crest .name small { display: block; font-family: "Newsreader", serif; font-weight: 400; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--copper-deep); margin-top: 2px; }
+  .masthead h1 { font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 560; }
+  .masthead .standfirst { font-size: 1.2rem; color: var(--ink-soft); max-width: 34ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; font-size: 0.86rem; color: var(--ink-faint); font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .meta-row b { color: var(--ink-soft); font-weight: 500; }
+
+  section { margin-top: clamp(2.6rem, 6vw, 4rem); }
+  section > h2 { font-size: clamp(1.4rem, 3.4vw, 1.9rem); margin-bottom: 0.9rem; }
+  section > h2 .n {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7em;
+    color: var(--copper);
+    margin-right: 0.6rem;
+    font-weight: 400;
+  }
+  p { margin: 0 0 1rem; }
+  p:last-child { margin-bottom: 0; }
+  a { color: var(--copper-deep); text-underline-offset: 2px; }
+
+  .hr { height: 1px; background: var(--rule); border: 0; margin: clamp(2.6rem,6vw,4rem) 0 0; }
+
+  /* diagnosis / before-after */
+  .compare { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin-top: 1.2rem; }
+  @media (min-width: 620px) { .compare { grid-template-columns: 1fr 1fr; } }
+  .compare > div { background: var(--surface); padding: 1.1rem 1.25rem; }
+  .compare h3 { font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: "Newsreader", serif; color: var(--ink-faint); margin-bottom: 0.5rem; }
+  .compare ul { margin: 0; padding-left: 1.1rem; font-size: 0.96rem; color: var(--ink-soft); }
+  .compare li { margin-bottom: 0.35rem; }
+  .compare .after li { color: var(--ink); }
+
+  /* selling points */
+  .points { display: grid; gap: 1.6rem; margin-top: 1.4rem; }
+  .point { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.4rem 1rem; align-items: baseline; }
+  .point .num { font-family: "IBM Plex Mono", monospace; font-size: 0.9rem; color: var(--copper); }
+  .point h3 { font-size: 1.12rem; }
+  .point p { font-size: 0.98rem; color: var(--ink-soft); margin: 0.3rem 0 0; grid-column: 2; }
+  .point .demo { grid-column: 2; margin-top: 0.4rem; font-size: 0.82rem; font-family: "IBM Plex Mono", monospace; color: var(--forest); }
+  .point .demo::before { content: "▸ demo: "; color: var(--ink-faint); }
+
+  /* integrations */
+  .integ { columns: 2; column-gap: 2rem; margin-top: 1rem; font-size: 0.95rem; }
+  @media (max-width: 560px) { .integ { columns: 1; } }
+  .integ div { break-inside: avoid; margin-bottom: 0.9rem; }
+  .integ b { display: block; font-family: "Newsreader", serif; color: var(--ink); }
+  .integ span { color: var(--ink-soft); }
+
+  /* pricing */
+  .price-table { width: 100%; border-collapse: collapse; margin-top: 1.2rem; font-size: 0.96rem; font-variant-numeric: tabular-nums; }
+  .price-table th { text-align: left; font-family: "Newsreader", serif; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); padding: 0.5rem 0.4rem; border-bottom: 2px solid var(--rule-strong); }
+  .price-table td { padding: 0.7rem 0.4rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .price-table td:last-child { text-align: right; font-family: "IBM Plex Mono", monospace; white-space: nowrap; }
+  .price-table .variant td { border-bottom: 0; }
+  .price-table .variant td:first-child b { font-family: "Fraunces", serif; }
+  .headline-price {
+    margin-top: 1.6rem; padding: 1.3rem 1.4rem;
+    background: var(--surface); border: 1px solid var(--rule-strong); border-left: 3px solid var(--copper);
+    border-radius: 8px; box-shadow: var(--shadow);
+  }
+  .headline-price .figure { font-family: "Fraunces", serif; font-size: 1.7rem; font-weight: 600; color: var(--copper-deep); }
+  .headline-price p { font-size: 0.92rem; color: var(--ink-soft); margin: 0.3rem 0 0; }
+
+  .recurring { margin-top: 1.2rem; font-size: 0.92rem; color: var(--ink-soft); }
+  .recurring dt { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.6rem; }
+  .recurring dd { margin: 0.1rem 0 0; }
+
+  /* next steps */
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 1.2rem 0 0; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 1.8rem 1fr; gap: 0.9rem; padding: 0.7rem 0; border-bottom: 1px solid var(--rule); }
+  .steps li::before { content: counter(s); font-family: "Fraunces", serif; font-weight: 600; color: var(--copper); }
+
+  footer { margin-top: clamp(2.6rem,6vw,4rem); padding-top: 1.4rem; border-top: 1px solid var(--rule); font-size: 0.82rem; color: var(--ink-faint); font-family: "IBM Plex Mono", monospace; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section { animation: rise .5s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,550;9..144,600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="crest">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="23" fill="var(--ink)"/>
+        <path d="M24 8c-4 3-6 6.5-6 10 0 2 1 3.6 2.4 4.8C19 24 18 25.7 18 28c0 3.4 2.6 6 6 6s6-2.6 6-6c0-2.3-1-4-2.4-5.2C29 22.6 30 21 30 19c0-3.5-2-7-6-11Z" fill="var(--copper)"/>
+        <path d="M24 14c-1.8 1.6-2.8 3.2-2.8 4.9 0 1.6 1.2 2.9 2.8 2.9s2.8-1.3 2.8-2.9c0-1.7-1-3.3-2.8-4.9Z" fill="var(--ground)"/>
+        <path d="M15 36c2.5 2.5 5.7 4 9 4s6.5-1.5 9-4" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="name">Nowy Browar Gdański<small>#ChodźnaBrowar · Wrzeszcz od 1873</small></span>
+    </div>
+
+    <p class="eyebrow">Propozycja dla właściciela</p>
+    <h1>Nowa strona, która pracuje na lokal — a nie odwrotnie</h1>
+    <p class="standfirst">Prototyp gotowy do obejrzenia. Poniżej: co daje, z czym się łączy i ile kosztuje wdrożenie.</p>
+    <div class="meta-row">
+      <span><b>Prototyp:</b> działający, na mockach</span>
+      <span><b>Kod:</b> github.com/pogan/kknbg-website</span>
+      <span><b>Stack:</b> Node · Express · SQLite · własny VPS</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="n">01</span>Dlaczego zmiana</h2>
+    <p>Obecna strona stoi na WordPressie. Menu trafia na nią jako obrazek albo PDF, każda zmiana ceny to zlecenie do grafika. Brakuje spójnego designu, sklepu, wersji angielskiej z prawdziwego zdarzenia oraz integracji z Google, Mapami i social mediami. Dla lokalu, w którym 1200 m² i 450 miejsc, a przez ponad wiek warzono tu do 175 tysięcy hektolitrów rocznie — strona powinna być wizytówką, nie kłopotem.</p>
+    <div class="compare">
+      <div>
+        <h3>Dziś</h3>
+        <ul>
+          <li>Menu jako grafika / PDF, zmiany przez grafika</li>
+          <li>Brak sklepu z piwem</li>
+          <li>„Tłumaczenie” wtyczką, słabe pod SEO</li>
+          <li>Wtyczki do łatania i aktualizowania</li>
+          <li>Treść i wygląd splecione ze sobą</li>
+        </ul>
+      </div>
+      <div class="after">
+        <h3>Po wdrożeniu</h3>
+        <ul>
+          <li>Admin wgrywa PDF — system wykrywa pozycje i ceny</li>
+          <li>Sklep gotowy do włączenia (BLIK w kilka dni)</li>
+          <li>Prawdziwe PL / EN z poprawnym <code>hreflang</code></li>
+          <li>Jeden panel: menu, promocje, teksty, zamówienia</li>
+          <li>Kod i dane u Was, hosting u Was</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">02</span>Co pokazuje prototyp</h2>
+    <p>Cała strona działa end-to-end — łącznie z panelem administracyjnym, importem menu z PDF, koszykiem i „zapłatą”. Zewnętrzne usługi (płatności, logowanie Google, Instagram, Untappd) są zamockowane, ale w miejscach, w których przy wdrożeniu wystarczy podpiąć realny klucz.</p>
+    <div class="points">
+      <div class="point">
+        <span class="num">1</span><h3>Menu bez grafika i bez czekania</h3>
+        <p>Admin wgrywa PDF od kuchni. System wyciąga pozycje, gramaturę i ceny, pokazuje do akceptu, publikuje. Minuty zamiast dni.</p>
+        <span class="demo">panel → Import PDF → wgraj kartę NBG</span>
+      </div>
+      <div class="point">
+        <span class="num">2</span><h3>Wersjonowanie karty</h3>
+        <p>Każda publikacja zapisana. Powrót do poprzedniej wersji menu jednym kliknięciem — po sezonie albo po pomyłce.</p>
+        <span class="demo">panel → Menu → Historia wersji → Przywróć</span>
+      </div>
+      <div class="point">
+        <span class="num">3</span><h3>Wzrost w Google i Mapach</h3>
+        <p>Dane strukturalne (restauracja + browar + menu + produkty + wydarzenia), Local SEO, szybkość, gotowość pod Google Business Profile i „Reserve with Google”.</p>
+        <span class="demo">źródło strony → bloki JSON-LD · /sitemap.xml</span>
+      </div>
+      <div class="point">
+        <span class="num">4</span><h3>Mobile-first</h3>
+        <p>70%+ ruchu gastro jest z telefonu. Stały pasek „Rezerwuj / Menu / Zadzwoń”, menu działa offline, aplikacja „dodaj do ekranu”.</p>
+      </div>
+      <div class="point">
+        <span class="num">5</span><h3>Sklep z piwem gotowy do włączenia</h3>
+        <p>Produkty, koszyk, checkout, zamówienia, magazyn, potwierdzenia e-mail. W prototypie płatność symulowana — po wdrożeniu prawdziwa bramka (BLIK) to kilka dni.</p>
+        <span class="demo">/sklep → koszyk → „Zapłać” → potwierdzenie + stan −1</span>
+      </div>
+      <div class="point">
+        <span class="num">6</span><h3>Ten sam system zasila ekrany w lokalu</h3>
+        <p>Menu i promocje wpisane raz w panelu pojawiają się też na telewizorach — jedno źródło treści dla strony i ~35 ekranów.</p>
+        <span class="demo">/signage w trybie pełnoekranowym</span>
+      </div>
+      <div class="point">
+        <span class="num">7</span><h3>Browar w centrum uwagi</h3>
+        <p>Siedem piw z piwnicy z ocenami Untappd, miejsce na „co teraz w tankach”, degustacje i zwiedzanie jako wydarzenia z biletami.</p>
+      </div>
+      <div class="point">
+        <span class="num">8</span><h3>Social z automatu</h3>
+        <p>Ładne podglądy linków (własne obrazy OG dla menu, promocji, produktów), feed Instagrama, strona „link in bio”, gotowość pod piksele Meta/TikTok.</p>
+      </div>
+      <div class="point">
+        <span class="num">9</span><h3>B2B jako kanał sprzedaży</h3>
+        <p>Osobna oferta dla gastronomii i sieci handlowych z formularzem trafiającym prosto do skrzynki lub CRM.</p>
+      </div>
+      <div class="point">
+        <span class="num">10</span><h3>Własność, RODO, bezpieczeństwo</h3>
+        <p>Kod na Waszym GitHubie, dane w Waszej bazie, hosting na Waszym VPS. Logowanie Google z rolami, baner zgód (Consent Mode v2), kopie zapasowe.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">03</span>Z czym łączymy stronę</h2>
+    <p>Wszystko poniżej jest w prototypie przygotowane — podmiana na realne usługi nie rusza wyglądu ani panelu.</p>
+    <div class="integ">
+      <div><b>Rezerwacje</b><span>MojStolik.pl / Zenchef — widget z potwierdzeniem i kaucją</span></div>
+      <div><b>Płatności</b><span>Autopay lub Przelewy24 (BLIK) dla PL, Stripe dla turystów</span></div>
+      <div><b>Dostawa jedzenia</b><span>Wolt / Pyszne.pl / Uber Eats + własny click&amp;collect</span></div>
+      <div><b>Piwo</b><span>Untappd — oceny i check-iny przy lineupie i w sklepie</span></div>
+      <div><b>Wydarzenia</b><span>GoingApp / Kicket — bilety na degustacje i zwiedzanie</span></div>
+      <div><b>Analityka</b><span>GA4 + GTM + Microsoft Clarity (heatmapy), po zgodzie cookie</span></div>
+      <div><b>Newsletter / CRM</b><span>Brevo / MailerLite z segmentami; leady B2B do Pipedrive</span></div>
+      <div><b>Faktury</b><span>Fakturownia / wFirma — faktura po opłaceniu zamówienia</span></div>
+      <div><b>Social</b><span>Behold (feed IG), wydarzenia FB, dynamiczne obrazy OG</span></div>
+      <div><b>Google</b><span>Business Profile, Search Console, Merchant Center</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">04</span>Wycena wdrożenia</h2>
+    <p>Stawka 180–220 zł/h netto (senior full-stack + design, rynek 2026). Zakres produkcyjny z realnymi integracjami — pełne rozbicie na moduły w <code>docs/PRICING.md</code>.</p>
+
+    <table class="price-table">
+      <thead><tr><th>Obszar</th><th>Wartość netto</th></tr></thead>
+      <tbody>
+        <tr><td>Diagnoza, architektura treści, projekty (desktop + mobile)</td><td>13 700 – 21 300</td></tr>
+        <tr><td>Front-end + rdzeń aplikacji + panel CMS</td><td>25 400 – 41 900</td></tr>
+        <tr><td>Menu (PL/EN, wersjonowanie) + import PDF</td><td>12 800 – 21 400</td></tr>
+        <tr><td>Sklep + płatności + promocje</td><td>18 000 – 31 100</td></tr>
+        <tr><td>SEO/GEO, social/OG, rezerwacje, RODO, analityka</td><td>17 000 – 30 000</td></tr>
+        <tr><td>Testy, QA, dostępność (WCAG AA)</td><td>5 900 – 9 700</td></tr>
+        <tr><td>DevOps, migracja treści, launch, szkolenie</td><td>10 700 – 20 400</td></tr>
+        <tr><td>PM / komunikacja / bufor (~15%)</td><td>17 000 – 29 000</td></tr>
+        <tr><td><b>Razem, w zależności od zakresu</b></td><td><b>~129 000 – 221 000</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="headline-price">
+      <span class="figure">140 000 – 180 000 zł netto</span>
+      <p>Rekomendowany zakres: design w 2 rundach, sklep click&amp;collect, jedna bramka płatności, rezerwacje przez zewnętrzny widget.</p>
+    </div>
+
+    <table class="price-table">
+      <tbody>
+        <tr class="variant"><td><b>MVP — strona bez sklepu</b><br><span style="color:var(--ink-soft);font-size:.9rem">statyka + menu + import PDF + promocje + SEO/mobile/social + CMS</span></td><td>70 000 – 95 000</td></tr>
+        <tr class="variant"><td><b>Pełny zakres</b><br><span style="color:var(--ink-soft);font-size:.9rem">+ rozbudowany sklep, integracja rezerwacji/POS, moduł ekranów per strefa</span></td><td>do 221 000</td></tr>
+        <tr class="variant"><td><b>Moduł ekranów w lokalu</b> (opcjonalnie, osobno)<br><span style="color:var(--ink-soft);font-size:.9rem">strefy per ekran, tryb offline, wyniki meczów na żywo</span></td><td>15 000 – 30 000</td></tr>
+      </tbody>
+    </table>
+
+    <dl class="recurring">
+      <dt>Hosting + monitoring + backup</dt><dd>120 – 350 zł / mies.</dd>
+      <dt>Opieka / SLA (aktualizacje, kopie, drobne zmiany)</dt><dd>800 – 2 500 zł / mies.</dd>
+      <dt>Licencje integracji (rezerwacje, newsletter, feed IG)</dt><dd>0 – 600 zł / mies.</dd>
+      <dt>Prototyp (ten etap)</dt><dd>8 000 – 14 000 zł netto — zaliczane na poczet wdrożenia po podpisaniu umowy</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2><span class="n">05</span>Następne kroki</h2>
+    <ol class="steps">
+      <li>Prezentacja prototypu na żywo — strona i panel administracyjny.</li>
+      <li>Ustalenie zakresu (MVP / rekomendowany / pełny) i wybór integracji.</li>
+      <li>Umowa, harmonogram, dostęp do materiałów (zdjęcia wnętrz, ceny piw, teksty EN).</li>
+      <li>Wdrożenie modułami, cotygodniowe wersje do obejrzenia na Waszym VPS.</li>
+      <li>Launch: DNS, przekierowania ze starej strony, zgłoszenie do Google, szkolenie zespołu.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Nowy Browar Gdański · ul. Jana Kilińskiego 7E, 80-452 Gdańsk-Wrzeszcz · prototyp v0.1.0 · dokument roboczy
+  </footer>
+</div>
