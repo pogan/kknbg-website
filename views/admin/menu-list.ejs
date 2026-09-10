@@ -1,0 +1,31 @@
+<div class="admin-card">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <p class="muted m-0">Karty menu w podziale na typ i język. Każda publikacja tworzy wersję, do której można wrócić.</p>
+    <a class="btn btn-primary btn-sm" href="/admin/menu/nowe">+ Nowe menu</a>
+  </div>
+</div>
+
+<div class="admin-card">
+  <table class="admin-table">
+    <thead><tr><th>Tytuł</th><th>Typ</th><th>Język</th><th>Status</th><th>Wersje</th><th>Aktualizacja</th><th></th></tr></thead>
+    <tbody>
+      <% menus.forEach(function(m){ %>
+        <tr>
+          <td><strong><%= m.title %></strong><br><code class="tiny">/menu/<%= m.slug %></code></td>
+          <td><%= m.typeLabel %></td>
+          <td><span class="pill pill--archived"><%= m.locale %></span></td>
+          <td><span class="pill pill--<%= m.status %>"><%= m.status %></span></td>
+          <td><%= m.revisionCount %></td>
+          <td class="tiny muted"><%= formatDateTime(m.updated_at) %></td>
+          <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-dark" href="/admin/menu/<%= m.id %>">Edytuj</a>
+            <% if (m.status === 'published') { %>
+              <a class="btn btn-sm btn-link" href="/menu/<%= m.slug %>" target="_blank">Podgląd</a>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+      <% if (!menus.length) { %><tr><td colspan="7" class="muted">Brak menu. <a href="/admin/menu/nowe">Utwórz pierwsze</a> lub <a href="/admin/import-pdf">zaimportuj z PDF</a>.</td></tr><% } %>
+    </tbody>
+  </table>
+</div>

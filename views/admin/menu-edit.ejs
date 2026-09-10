@@ -1,0 +1,161 @@
+<% var TAGS = [['veg','wege'],['gf','bezglutenowe'],['spicy','ostre'],['new','nowość']]; %>
+
+<form method="post" action="<%= isNew ? '/admin/menu' : '/admin/menu/' + menu.id %>" id="menuForm">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="payload" id="menuPayload">
+
+  <div class="admin-card">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="title">Tytuł</label>
+        <input class="form-control" id="title" name="title" value="<%= menu.title %>" required data-slug-source data-slug-target="#slug">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="type">Typ</label>
+        <select class="form-select" id="type" name="type">
+          <% Object.entries(types).forEach(function([val,label]){ %>
+            <option value="<%= val %>" <%= menu.type === val ? 'selected' : '' %>><%= label %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="locale">Język</label>
+        <% if (isNew) { %>
+          <select class="form-select" id="locale" name="locale">
+            <option value="pl" <%= menu.locale === 'pl' ? 'selected' : '' %>>PL</option>
+            <option value="en" <%= menu.locale === 'en' ? 'selected' : '' %>>EN</option>
+          </select>
+        <% } else { %>
+          <input class="form-control" value="<%= menu.locale.toUpperCase() %>" disabled>
+        <% } %>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="slug">Slug (URL)</label>
+        <input class="form-control" id="slug" name="slug" value="<%= menu.slug %>" <%= isNew ? '' : 'readonly' %>>
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="intro">Wstęp (widoczny nad kartą)</label>
+        <textarea class="form-control" id="intro" name="intro" rows="2"><%= menu.intro %></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="m-0">Sekcje i pozycje</h2>
+      <button type="button" class="btn btn-sm btn-outline-dark" id="addSection">+ Sekcja</button>
+    </div>
+    <div id="sections" class="mt-3">
+      <% (menu.sections || []).forEach(function(section){ %>
+        <fieldset class="menu-edit-section">
+          <div class="d-flex gap-2 align-items-center mb-2">
+            <input class="form-control fw-bold sec-name" value="<%= section.name %>" placeholder="Nazwa sekcji">
+            <input class="form-control sec-note" value="<%= section.note || '' %>" placeholder="Notka (opcjonalnie)">
+            <button type="button" class="btn btn-sm btn-link text-danger sec-remove">Usuń sekcję</button>
+          </div>
+          <table class="admin-table sec-items">
+            <thead><tr><th>Nazwa</th><th>Gram.</th><th>Cena zł</th><th>Opis</th><th>Tagi</th><th></th></tr></thead>
+            <tbody>
+              <% (section.items || []).forEach(function(it){ %>
+                <tr class="item-row">
+                  <td><input class="i-name" value="<%= it.name %>"></td>
+                  <td><input class="i-weight" style="width:70px" value="<%= it.weight || '' %>"></td>
+                  <td><input class="i-price" style="width:80px" value="<%= it.price_grosze != null ? (it.price_grosze/100).toFixed(2).replace('.',',') : '' %>"></td>
+                  <td><input class="i-desc" value="<%= it.description || '' %>"></td>
+                  <td class="i-tags">
+                    <% TAGS.forEach(function(t){ %><label class="tiny d-block"><input type="checkbox" value="<%= t[0] %>" <%= (it.tags||[]).includes(t[0]) ? 'checked' : '' %>> <%= t[1] %></label><% }); %>
+                  </td>
+                  <td><button type="button" class="btn btn-sm btn-link text-danger item-remove">×</button></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-sm btn-outline-dark item-add">+ Pozycja</button>
+        </fieldset>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="admin-card d-flex flex-wrap gap-2 align-items-center">
+    <button class="btn btn-primary" type="submit">Zapisz wersję roboczą</button>
+    <% if (!isNew) { %>
+      <button class="btn btn-outline-dark" type="submit" formaction="/admin/menu/<%= menu.id %>/publikuj" formnovalidate>Zapisz i opublikuj</button>
+      <a class="btn btn-link" href="/menu/<%= menu.slug %>" target="_blank">Podgląd</a>
+    <% } %>
+    <a class="btn btn-link" href="/admin/menu">← Lista</a>
+  </div>
+</form>
+
+<% if (!isNew && menu.revisions && menu.revisions.length) { %>
+<div class="admin-card">
+  <h2>Historia wersji</h2>
+  <table class="admin-table">
+    <thead><tr><th>Wersja</th><th>Opis</th><th>Autor</th><th>Data</th><th></th></tr></thead>
+    <tbody>
+      <% menu.revisions.forEach(function(r){ %>
+        <tr>
+          <td><strong>v<%= r.version %></strong> <%= menu.current_revision_id === r.id ? '<span class="pill pill--published">bieżąca</span>' : '' %></td>
+          <td><%= r.note %></td>
+          <td class="tiny"><%= r.author || '—' %></td>
+          <td class="tiny muted"><%= formatDateTime(r.created_at) %></td>
+          <td>
+            <a class="btn btn-sm btn-link" href="/admin/menu/<%= menu.id %>/wersja/<%= r.id %>" target="_blank">Podgląd JSON</a>
+            <% if (menu.current_revision_id !== r.id) { %>
+              <form method="post" action="/admin/menu/<%= menu.id %>/przywroc/<%= r.id %>" class="d-inline" data-confirm="Przywrócić wersję v<%= r.version %>? Zostanie opublikowana jako nowa wersja.">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-sm btn-outline-dark" type="submit">Przywróć</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<div class="admin-card">
+  <form method="post" action="/admin/menu/<%= menu.id %>/status" class="d-flex gap-2 align-items-center">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <select class="form-select" name="status" style="width:auto">
+      <option value="published" <%= menu.status === 'published' ? 'selected' : '' %>>opublikowane</option>
+      <option value="draft" <%= menu.status === 'draft' ? 'selected' : '' %>>szkic (ukryte)</option>
+      <option value="archived" <%= menu.status === 'archived' ? 'selected' : '' %>>zarchiwizowane</option>
+    </select>
+    <button class="btn btn-sm btn-outline-dark" type="submit">Zmień status</button>
+    <form method="post" action="/admin/menu/<%= menu.id %>/usun" data-confirm="Usunąć całe menu wraz z historią wersji?" class="ms-auto">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="btn btn-sm btn-link text-danger" type="submit">Usuń menu</button>
+    </form>
+  </form>
+</div>
+<% } %>
+
+<template id="tplSection">
+  <fieldset class="menu-edit-section">
+    <div class="d-flex gap-2 align-items-center mb-2">
+      <input class="form-control fw-bold sec-name" placeholder="Nazwa sekcji">
+      <input class="form-control sec-note" placeholder="Notka (opcjonalnie)">
+      <button type="button" class="btn btn-sm btn-link text-danger sec-remove">Usuń sekcję</button>
+    </div>
+    <table class="admin-table sec-items">
+      <thead><tr><th>Nazwa</th><th>Gram.</th><th>Cena zł</th><th>Opis</th><th>Tagi</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button type="button" class="btn btn-sm btn-outline-dark item-add">+ Pozycja</button>
+  </fieldset>
+</template>
+
+<template id="tplItem">
+  <tr class="item-row">
+    <td><input class="i-name"></td>
+    <td><input class="i-weight" style="width:70px"></td>
+    <td><input class="i-price" style="width:80px"></td>
+    <td><input class="i-desc"></td>
+    <td class="i-tags">
+      <% TAGS.forEach(function(t){ %><label class="tiny d-block"><input type="checkbox" value="<%= t[0] %>"> <%= t[1] %></label><% }); %>
+    </td>
+    <td><button type="button" class="btn btn-sm btn-link text-danger item-remove">×</button></td>
+  </tr>
+</template>
+
+<% script = '<script src="/js/menu-editor.js" defer></script>'; %>

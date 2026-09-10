@@ -85,6 +85,19 @@ body.admin-edit-mode .editable::after {
   font-size: 0.85rem; align-items: center;
 }
 
+.menu-edit-section {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--surface-2);
+}
+.menu-edit-section .admin-table input,
+.menu-edit-section .admin-table select {
+  width: 100%; font-size: 0.85rem; padding: 0.3rem 0.45rem;
+  border: 1px solid var(--line-strong); border-radius: 6px;
+}
+
 .review-row td { padding: 0.4rem 0.5rem; }
 .review-row input, .review-row select, .review-row textarea { width: 100%; font-size: 0.85rem; padding: 0.35rem 0.5rem; border: 1px solid var(--line-strong); border-radius: 6px; }
 .confidence { font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 4px; }

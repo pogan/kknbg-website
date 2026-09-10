@@ -91,6 +91,11 @@ function createApp() {
   app.use('/admin', require('./routes/admin'));
   app.use('/', require('./routes/public'));
 
+  // Dynamiczne wpisy sitemap z modułów
+  const { registerSitemapProvider } = require('./routes/sitemap');
+  registerSitemapProvider(require('./services/menu.service').sitemapEntries);
+  registerSitemapProvider(require('./services/shop.service').sitemapEntries);
+
   // Health-check
   app.get('/healthz', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
