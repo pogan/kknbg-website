@@ -1,0 +1,39 @@
+<div class="admin-card">
+  <h2>Wczytaj kartę menu z PDF</h2>
+  <p class="muted">System wyodrębni tekst, wykryje sekcje i pozycje (nazwa, gramatura, cena, opis) i pokaże je do akceptu/poprawki. Publikacja tworzy wersję menu z możliwością rollbacku.</p>
+  <form method="post" action="/admin/import-pdf" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-end">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+      <label class="form-label" for="pdf">Plik PDF</label>
+      <input class="form-control" type="file" id="pdf" name="pdf" accept="application/pdf" required>
+    </div>
+    <div>
+      <label class="form-label" for="locale">Język karty</label>
+      <select class="form-select" id="locale" name="locale"><option value="pl">PL</option><option value="en">EN</option></select>
+    </div>
+    <button class="btn btn-primary" type="submit">Wczytaj i przeanalizuj</button>
+  </form>
+  <p class="tiny muted mt-2">Przykładowe pliki znajdziesz w repozytorium: <code>kk_input_data/nbg_nowe_menu_20260829_*.pdf</code></p>
+</div>
+
+<div class="admin-card">
+  <h2>Historia importów</h2>
+  <table class="admin-table">
+    <thead><tr><th>Plik</th><th>Strony</th><th>Status</th><th>Data</th><th></th></tr></thead>
+    <tbody>
+      <% imports.forEach(function(i){ %>
+        <tr>
+          <td><%= i.original_name %></td>
+          <td><%= i.pages %></td>
+          <td><span class="pill pill--<%= i.status === 'applied' ? 'published' : (i.status === 'failed' ? 'cancelled' : 'new') %>"><%= i.status %></span></td>
+          <td class="tiny muted"><%= formatDateTime(i.created_at) %></td>
+          <td>
+            <a class="btn btn-sm btn-outline-dark" href="/admin/import-pdf/<%= i.id %>">Otwórz</a>
+            <% if (i.target_menu_id) { %><a class="btn btn-sm btn-link" href="/admin/menu/<%= i.target_menu_id %>">→ menu</a><% } %>
+          </td>
+        </tr>
+      <% }); %>
+      <% if (!imports.length) { %><tr><td colspan="5" class="muted">Brak importów.</td></tr><% } %>
+    </tbody>
+  </table>
+</div>

@@ -20,7 +20,7 @@
     "seed": "node src/db/seed.js",
     "reset": "node src/db/reset.js",
     "import:media": "node scripts/import-media.js",
-    "test": "node --test test/"
+    "test": "node --test \"test/**/*.test.js\""
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",

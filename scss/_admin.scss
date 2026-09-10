@@ -92,11 +92,25 @@ body.admin-edit-mode .editable::after {
   margin-bottom: 1rem;
   background: var(--surface-2);
 }
-.menu-edit-section .admin-table input,
+.menu-edit-section .admin-table input:not([type="checkbox"]),
 .menu-edit-section .admin-table select {
   width: 100%; font-size: 0.85rem; padding: 0.3rem 0.45rem;
   border: 1px solid var(--line-strong); border-radius: 6px;
 }
+.menu-edit-section .admin-table td { vertical-align: middle; }
+td.i-tags { white-space: nowrap; }
+td.i-tags label {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.15rem;
+  margin-right: 0.5rem;
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+}
+td.i-tags label input { margin: 0; }
+.menu-edit-section .admin-table th { font-size: 0.68rem; }
+.menu-edit-section .admin-table td { padding: 0.35rem 0.4rem; }
+select.i-move { min-width: 110px; }
 
 .review-row td { padding: 0.4rem 0.5rem; }
 .review-row input, .review-row select, .review-row textarea { width: 100%; font-size: 0.85rem; padding: 0.35rem 0.5rem; border: 1px solid var(--line-strong); border-radius: 6px; }

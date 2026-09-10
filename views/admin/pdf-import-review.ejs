@@ -1,0 +1,126 @@
+<div class="admin-card">
+  <div class="d-flex justify-content-between flex-wrap gap-2">
+    <div>
+      <strong><%= imp.original_name %></strong> · <%= imp.pages %> str. ·
+      <span class="pill pill--<%= imp.status === 'applied' ? 'published' : 'new' %>"><%= imp.status %></span>
+    </div>
+    <a class="btn btn-sm btn-link" href="/admin/import-pdf">← Historia importów</a>
+  </div>
+  <p class="tiny muted mt-2">
+    Ekstrakcja wspomagana — sprawdź pozycje oznaczone <span class="confidence confidence--low">niską pewnością</span>
+    i <span class="confidence confidence--mid">średnią</span>. Popraw nazwy, ceny, gramaturę; przenoś pozycje między sekcjami; usuwaj śmieci (np. teksty marketingowe).
+    Karty wielokolumnowe bywają „spłaszczane" przez PDF — dlatego jest ten krok.
+  </p>
+</div>
+
+<form method="post" id="reviewForm" action="/admin/import-pdf/<%= imp.id %>/review">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="payload" id="reviewPayload">
+
+  <div class="admin-card">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="m-0">Wykryte sekcje i pozycje</h2>
+      <button type="button" class="btn btn-sm btn-outline-dark" id="addSection">+ Sekcja</button>
+    </div>
+    <div id="sections" class="mt-3">
+      <% sections.forEach(function(section, si){ %>
+        <fieldset class="menu-edit-section" data-section-index="<%= si %>">
+          <div class="d-flex gap-2 align-items-center mb-2">
+            <input class="form-control fw-bold sec-name" value="<%= section.name %>">
+            <input class="form-control sec-note" value="<%= section.note || '' %>" placeholder="Notka">
+            <button type="button" class="btn btn-sm btn-link text-danger sec-remove">Usuń</button>
+          </div>
+          <table class="admin-table sec-items">
+            <thead><tr><th style="width:60px">Pewn.</th><th>Nazwa</th><th>Gram.</th><th>Cena</th><th>Opis</th><th>Tagi</th><th>Sekcja</th><th></th></tr></thead>
+            <tbody>
+              <% (section.items || []).forEach(function(it){ %>
+                <tr class="item-row" data-confidence="<%= it.confidence || 'mid' %>">
+                  <td><span class="confidence confidence--<%= it.confidence === 'high' ? 'high' : (it.confidence === 'low' ? 'low' : 'mid') %>"><%= it.confidence || 'mid' %></span></td>
+                  <td><input class="i-name" value="<%= it.name %>"></td>
+                  <td><input class="i-weight" style="width:70px" value="<%= it.weight || '' %>"></td>
+                  <td><input class="i-price" style="width:80px" value="<%= it.price_grosze != null ? (it.price_grosze/100).toFixed(2).replace('.',',') : (it.price_note || '') %>"></td>
+                  <td><input class="i-desc" value="<%= (it.description || '').replace(/\"/g,'&quot;') %>"></td>
+                  <td class="i-tags">
+                    <% tags.forEach(function(t){ %><label class="tiny d-block"><input type="checkbox" value="<%= t[0] %>" <%= (it.tags||[]).includes(t[0]) ? 'checked' : '' %>> <%= t[1] %></label><% }); %>
+                  </td>
+                  <td><select class="i-move"><option value="">— przenieś —</option></select></td>
+                  <td><button type="button" class="btn btn-sm btn-link text-danger item-remove">×</button></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-sm btn-outline-dark item-add">+ Pozycja</button>
+        </fieldset>
+      <% }); %>
+    </div>
+    <button class="btn btn-outline-dark mt-2" type="submit">Zapisz poprawki</button>
+  </div>
+
+  <div class="admin-card">
+    <h2>Zastosuj jako menu</h2>
+    <div class="row g-3">
+      <div class="col-md-5">
+        <label class="form-label" for="title">Tytuł menu</label>
+        <input class="form-control" id="title" name="title" value="<%= imp.original_name.replace(/\.pdf$/i,'') %>" form="applyForm">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="type">Typ</label>
+        <select class="form-select" id="type" name="type" form="applyForm">
+          <% Object.entries(types).forEach(function([v,l]){ %><option value="<%= v %>"><%= l %></option><% }); %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label" for="locale">Język</label>
+        <select class="form-select" id="locale" name="locale" form="applyForm"><option value="pl">PL</option><option value="en">EN</option></select>
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <label class="tiny"><input type="checkbox" name="publish" form="applyForm"> publikuj od razu</label>
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="slug">Slug</label>
+        <input class="form-control" id="slug" name="slug" value="<%= suggestedSlug %>" form="applyForm">
+      </div>
+    </div>
+    <button class="btn btn-primary mt-3" type="submit" form="applyForm">Utwórz menu z tych danych</button>
+    <p class="tiny muted mt-2">Bez „publikuj od razu": menu powstaje jako wersja robocza — dopracujesz je w module Menu i opublikujesz, gdy będzie gotowe.</p>
+  </div>
+</form>
+
+<form method="post" id="applyForm" action="/admin/import-pdf/<%= imp.id %>/apply">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="payload" id="applyPayload">
+</form>
+
+<details class="admin-card">
+  <summary style="cursor:pointer"><strong>Surowy tekst z PDF</strong> (podgląd ekstrakcji)</summary>
+  <pre style="white-space:pre-wrap;font-size:.78rem;background:var(--surface-2);padding:1rem;border-radius:8px;margin-top:.5rem;max-height:400px;overflow:auto"><%= imp.raw_text.slice(0, 12000) %></pre>
+</details>
+
+<template id="tplSection">
+  <fieldset class="menu-edit-section">
+    <div class="d-flex gap-2 align-items-center mb-2">
+      <input class="form-control fw-bold sec-name" placeholder="Nazwa sekcji">
+      <input class="form-control sec-note" placeholder="Notka">
+      <button type="button" class="btn btn-sm btn-link text-danger sec-remove">Usuń</button>
+    </div>
+    <table class="admin-table sec-items">
+      <thead><tr><th style="width:60px">Pewn.</th><th>Nazwa</th><th>Gram.</th><th>Cena</th><th>Opis</th><th>Tagi</th><th>Sekcja</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button type="button" class="btn btn-sm btn-outline-dark item-add">+ Pozycja</button>
+  </fieldset>
+</template>
+<template id="tplItem">
+  <tr class="item-row" data-confidence="mid">
+    <td><span class="confidence confidence--mid">nowa</span></td>
+    <td><input class="i-name"></td>
+    <td><input class="i-weight" style="width:70px"></td>
+    <td><input class="i-price" style="width:80px"></td>
+    <td><input class="i-desc"></td>
+    <td class="i-tags"><% tags.forEach(function(t){ %><label class="tiny d-block"><input type="checkbox" value="<%= t[0] %>"> <%= t[1] %></label><% }); %></td>
+    <td><select class="i-move"><option value="">— przenieś —</option></select></td>
+    <td><button type="button" class="btn btn-sm btn-link text-danger item-remove">×</button></td>
+  </tr>
+</template>
+
+<% script = '<script src="/js/pdf-review.js" defer></script>'; %>
