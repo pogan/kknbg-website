@@ -33,7 +33,8 @@ module.exports = function localsMiddleware(req, res, next) {
   // CSRF token dostępny w każdym widoku (formularze)
   try {
     res.locals.csrfToken = generateCsrfToken(req, res);
-  } catch {
+  } catch (e) {
+    if (env.NODE_ENV !== 'production') console.error('csrf token gen failed:', e.message);
     res.locals.csrfToken = '';
   }
 

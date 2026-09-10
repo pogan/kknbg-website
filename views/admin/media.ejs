@@ -1,0 +1,40 @@
+<div class="admin-card">
+  <h2>Wgraj obrazy</h2>
+  <form method="post" action="/admin/media" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-end">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+      <label class="form-label" for="files">Pliki (JPG, PNG, WebP — do 12 naraz)</label>
+      <input class="form-control" type="file" id="files" name="files" multiple accept="image/*" required>
+    </div>
+    <div>
+      <label class="form-label" for="alt">Tekst alternatywny (opis)</label>
+      <input class="form-control" type="text" id="alt" name="alt" placeholder="np. Wnętrze restauracji">
+    </div>
+    <button class="btn btn-primary" type="submit">Wgraj</button>
+  </form>
+  <p class="tiny muted mt-2">Każdy obraz jest automatycznie konwertowany do WebP w 3 rozmiarach (400 / 800 / 1400 px) — dla szybkości ładowania.</p>
+</div>
+
+<div class="admin-card">
+  <h2><%= items.length %> plików</h2>
+  <div class="feature-grid feature-grid--4">
+    <% items.forEach(function(m){ %>
+      <div class="card-lite">
+        <div class="card-lite__media"><img src="<%= (m.variants.webp && m.variants.webp[400]) || m.path %>" alt="<%= m.alt %>" loading="lazy"></div>
+        <div class="card-lite__body" style="gap:.35rem">
+          <code class="tiny"><%= m.path %></code>
+          <span class="tiny muted"><%= m.width %>×<%= m.height %> · <%= Math.round((m.bytes||0)/1024) %> KB</span>
+          <form method="post" action="/admin/media/<%= m.id %>/alt" class="d-flex gap-1">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input class="form-control form-control-sm" name="alt" value="<%= m.alt %>" placeholder="opis">
+            <button class="btn btn-sm btn-outline-dark" type="submit">✓</button>
+          </form>
+          <form method="post" action="/admin/media/<%= m.id %>/delete" data-confirm="Usunąć ten plik?" class="mt-1">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="btn btn-sm btn-link text-danger p-0" type="submit">Usuń</button>
+          </form>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+</div>

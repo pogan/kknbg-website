@@ -1,0 +1,25 @@
+<div class="admin-card">
+  <p class="muted">Edytuj teksty widoczne na stronie. Zmiany publikują się natychmiast. Wersja EN dziedziczy z PL do czasu wprowadzenia tłumaczenia.</p>
+  <p class="tiny muted">Wskazówka: możesz też edytować teksty bezpośrednio na stronie — kliknij „Tryb edycji" w pasku na dole strony publicznej.</p>
+</div>
+
+<div class="admin-card">
+  <table class="admin-table">
+    <thead><tr><th>Blok</th><th>Tytuł (PL)</th><th>Języki</th><th>Aktualizacja</th><th></th></tr></thead>
+    <tbody>
+      <% groups.forEach(function(g){ %>
+        <tr>
+          <td><code><%= g.key %></code></td>
+          <td><%= (g.locales.pl && g.locales.pl.title) || '—' %></td>
+          <td>
+            <% ['pl','en'].forEach(function(l){ %>
+              <a class="pill <%= g.locales[l] ? 'pill--published' : 'pill--draft' %>" href="/admin/tresc/<%= g.key %>/<%= l %>"><%= l %></a>
+            <% }); %>
+          </td>
+          <td class="tiny muted"><%= g.locales.pl ? formatDateTime(g.locales.pl.updated_at) : '' %></td>
+          <td><a class="btn btn-sm btn-outline-dark" href="/admin/tresc/<%= g.key %>/pl">Edytuj</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>

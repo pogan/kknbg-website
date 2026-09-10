@@ -79,10 +79,16 @@ const {
     (req.body && req.body._csrf) || req.headers['x-csrf-token'] || (req.query && req.query._csrf),
 });
 
+// Zawsze nadpisuj token/cookie (identyfikator sesji zmienia się po zalogowaniu,
+// co przy walidacji reuse rzucałoby "invalid csrf token").
+function generateCsrfToken(req, res) {
+  return generateToken(req, res, true, false); // overwrite=true, validateOnReuse=false
+}
+
 module.exports = {
   helmetMiddleware,
   generalLimiter,
   formLimiter,
   csrfProtection: doubleCsrfProtection,
-  generateCsrfToken: generateToken,
+  generateCsrfToken,
 };

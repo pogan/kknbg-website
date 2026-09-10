@@ -1,0 +1,16 @@
+<div class="admin-card">
+  <p class="muted">Wszystkie wiadomości e-mail wysyłane przez serwis (potwierdzenia formularzy, zamówień). W prototypie zapisywane jako pliki <code>.eml</code> w <code>data/outbox/</code>. W wersji produkcyjnej: SMTP / Resend / Brevo.</p>
+</div>
+
+<div class="admin-card">
+  <% messages.forEach(function(m){ %>
+    <details style="border-bottom:1px solid var(--line);padding:.6rem 0">
+      <summary style="cursor:pointer">
+        <strong><%= m.subject %></strong>
+        <span class="tiny muted"> → <%= m.to %> · <%= m.date %></span>
+      </summary>
+      <pre style="white-space:pre-wrap;background:var(--surface-2);padding:1rem;border-radius:8px;margin-top:.5rem;font-size:.82rem"><%= m.body %></pre>
+    </details>
+  <% }); %>
+  <% if (!messages.length) { %><p class="muted">Skrzynka pusta.</p><% } %>
+</div>
